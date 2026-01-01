@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Japan 2026</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Playfair+Display:wght@400;700&family=Bebas+Neue&family=Noto+Sans+JP:wght@400;700;900&family=Noto+Serif+JP:wght@400;700&family=Shippori+Mincho:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Leaflet Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+</head>
+<body>
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                <span class="jp-text">日本 2026</span>
+                <span class="en-text">JAPAN 2026</span>
+            </h1>
+            <p class="hero-subtitle">Trip Planning</p>
+            <div class="hero-dates">
+                <span class="date-badge">April 8-18, 2026</span>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <span>Scroll</span>
+            <div class="scroll-arrow">↓</div>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="city-nav">
+        <div class="tab-container">
+            <button class="city-tab active" data-city="tokyo">
+                <span class="tab-jp">東京</span>
+                <span class="tab-en">TOKYO</span>
+            </button>
+            <button class="city-tab" data-city="kyoto">
+                <span class="tab-jp">京都</span>
+                <span class="tab-en">KYOTO</span>
+            </button>
+            <button class="city-tab" data-city="osaka">
+                <span class="tab-jp">大阪</span>
+                <span class="tab-en">OSAKA</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="content-area">
+
+        <!-- TOKYO SECTION -->
+        <section class="city-content tokyo-theme active" id="tokyo">
+            <div class="city-header">
+                <h2>東京 <span>TOKYO</span></h2>
+                <p class="city-intro">Thinking 4-5 nights here to start</p>
+            </div>
+
+            <!-- Tokyo Airbnb Options - TOP PRIORITY -->
+            <div class="section-block airbnb">
+                <h3>Accommodation</h3>
+                <p class="section-intro">April 9-13, 2026 (4-5 nights)</p>
+                <div class="airbnb-grid">
+                    <div class="airbnb-card">
+                        <a href="https://www.airbnb.com/rooms/1493595795907376215?adults=6&check_in=2026-04-09&check_out=2026-04-13&guests=8" target="_blank" class="airbnb-img-link">
+                            <div class="airbnb-img" style="background-image: url('https://a0.muscache.com/im/pictures/hosting/Hosting-U3RheVN1cHBseUxpc3Rpbmc6MTQ5MzU5NTc5NTkwNzM3NjIxNQ==/original/47b21a81-b32f-4a44-b7f1-74626abbd437.jpeg?im_w=720&width=720&quality=70')">
+                                <span class="price-tag">★ 4.82</span>
+                            </div>
+                        </a>
+                        <div class="airbnb-info">
+                            <h4>Shinjuku Rental Unit</h4>
+                            <p class="location">3 bed · 6 beds · 2 bath</p>
+                            <p class="capacity">Shinjuku City</p>
+                            <a href="https://www.airbnb.com/rooms/1493595795907376215?adults=6&check_in=2026-04-09&check_out=2026-04-13&guests=8" target="_blank" class="airbnb-link">View on Airbnb →</a>
+                        </div>
+                    </div>
+                    <div class="airbnb-card">
+                        <a href="https://www.airbnb.com/rooms/1543990239560296976?adults=8&check_in=2026-04-09&check_out=2026-04-13&guests=8" target="_blank" class="airbnb-img-link">
+                            <div class="airbnb-img" style="background-image: url('https://a0.muscache.com/im/pictures/hosting/Hosting-1543990239560296976/original/a1351fa9-30cb-4592-8b0f-7fe467b63bdb.jpeg?im_w=720&width=720&quality=70')">
+                                <span class="price-tag">★ New</span>
+                            </div>
+                        </a>
+                        <div class="airbnb-info">
+                            <h4>Shinjuku Home</h4>
+                            <p class="location">3 bed · 8 beds · 2 bath</p>
+                            <p class="capacity">Shinjuku City</p>
+                            <a href="https://www.airbnb.com/rooms/1543990239560296976?adults=8&check_in=2026-04-09&check_out=2026-04-13&guests=8" target="_blank" class="airbnb-link">View on Airbnb →</a>
+                        </div>
+                    </div>
+                    <div class="airbnb-card">
+                        <a href="https://www.airbnb.com/rooms/50765608?adults=6&check_in=2026-04-09&check_out=2026-04-13&guests=6" target="_blank" class="airbnb-img-link">
+                            <div class="airbnb-img" style="background-image: url('https://a0.muscache.com/im/pictures/miso/Hosting-50765608/original/9fccc4e1-bcc2-4070-9069-a68f807ea0a0.jpeg?im_w=720&width=720&quality=70')">
+                                <span class="price-tag">★ 4.90</span>
+                            </div>
+                        </a>
+                        <div class="airbnb-info">
+                            <h4>Taito City Place</h4>
+                            <p class="location">2 bed · 10 beds · 2 bath</p>
+                            <p class="capacity">Taito City (near Asakusa)</p>
+                            <a href="https://www.airbnb.com/rooms/50765608?adults=6&check_in=2026-04-09&check_out=2026-04-13&guests=6" target="_blank" class="airbnb-link">View on Airbnb →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tokyo: Morning Options -->
+            <div class="section-block">
+                <h3>Morning</h3>
+                <p class="section-intro">Wake-up moves and museum options if you want to start the day with something structured.</p>
+                <div id="tokyo-morning" class="accordion-section"></div>
+            </div>
+
+            <!-- Tokyo: Things to Do -->
+            <div class="section-block">
+                <h3>Things to Do</h3>
+                <p class="section-intro">Not a fixed schedule. Pick 1-2 districts per day based on energy and interest. Lesser-known neighborhoods are often the best finds.</p>
+                <div id="tokyo-daytime" class="accordion-section"></div>
+                <div id="tokyo-evening" class="accordion-section"></div>
+            </div>
+
+            <!-- Tokyo: Food -->
+            <div class="section-block">
+                <h3>Food Options</h3>
+                <div id="tokyo-food" class="accordion-section"></div>
+            </div>
+
+            <!-- Tokyo: Drinks -->
+            <div class="section-block">
+                <h3>Drinks</h3>
+                <div id="tokyo-drinks" class="accordion-section"></div>
+            </div>
+
+            <!-- Tokyo: Day Trips -->
+            <div class="section-block">
+                <h3>Day Trips</h3>
+                <p class="section-intro">Pick 1, maybe 2 if you have 6 days. All are doable as day trips but Hakone is better as overnight.</p>
+                <div id="tokyo-daytrips" class="accordion-section"></div>
+            </div>
+
+            <!-- Tokyo Map -->
+            <div class="section-block map-section">
+                <h3>Explore the Map</h3>
+                <p class="section-intro">Click a pin to see activity details.</p>
+                <div id="tokyo-map" class="city-map"></div>
+                <div id="tokyo-legend" class="map-legend"></div>
+            </div>
+
+            <!-- Open Questions -->
+            <div class="section-block open-items">
+                <h3>Open Questions</h3>
+                <div class="questions-list">
+                    <div class="question-item">
+                        <span class="q-status">OPEN</span>
+                        <p>Day trip to Mt. Fuji area? About 2-3 hours each way.</p>
+                    </div>
+                    <div class="question-item">
+                        <span class="q-status">OPEN</span>
+                        <p>Baseball game at Tokyo Dome? Season runs late March to October.</p>
+                    </div>
+                    <div class="question-item">
+                        <span class="q-status">OPEN</span>
+                        <p>How many nights in Tokyo?</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- KYOTO SECTION -->
+        <section class="city-content kyoto-theme" id="kyoto">
+            <div class="city-header">
+                <h2>京都 <span>KYOTO</span></h2>
+                <p class="city-intro">2-3 nights seems right. Temples, sake, slower pace. About 2.5 hours from Tokyo by Shinkansen.</p>
+            </div>
+
+            <!-- Kyoto Airbnb Options - TOP PRIORITY -->
+            <div class="section-block airbnb">
+                <h3>Accommodation</h3>
+                <p class="section-intro">Traditional machiya (townhouse) could be interesting here. Or something near the station for convenience.</p>
+                <div class="airbnb-grid">
+                    <div class="airbnb-card">
+                        <a href="https://www.airbnb.com/s/Gion--Kyoto--Japan/homes" target="_blank" class="airbnb-img-link">
+                            <div class="airbnb-img" style="background-image: url('images/kyoto-airbnb-1.jpg')">
+                                <span class="price-tag">Gion</span>
+                            </div>
+                        </a>
+                        <div class="airbnb-info">
+                            <h4>Gion Area</h4>
+                            <p class="location">Traditional district, walkable to most sights</p>
+                            <p class="capacity">TBD</p>
+                            <a href="https://www.airbnb.com/s/Gion--Kyoto--Japan/homes" target="_blank" class="airbnb-link">Browse Gion listings →</a>
+                        </div>
+                    </div>
+                    <div class="airbnb-card">
+                        <a href="https://www.airbnb.com/s/Kyoto-Station--Kyoto--Japan/homes" target="_blank" class="airbnb-img-link">
+                            <div class="airbnb-img" style="background-image: url('images/kyoto-airbnb-2.jpg')">
+                                <span class="price-tag">Station</span>
+                            </div>
+                        </a>
+                        <div class="airbnb-info">
+                            <h4>Near Kyoto Station</h4>
+                            <p class="location">Easy train access, less character</p>
+                            <p class="capacity">TBD</p>
+                            <a href="https://www.airbnb.com/s/Kyoto-Station--Kyoto--Japan/homes" target="_blank" class="airbnb-link">Browse Station listings →</a>
+                        </div>
+                    </div>
+                    <div class="airbnb-card">
+                        <a href="https://www.airbnb.com/s/Arashiyama--Kyoto--Japan/homes" target="_blank" class="airbnb-img-link">
+                            <div class="airbnb-img" style="background-image: url('images/kyoto-airbnb-3.jpg')">
+                                <span class="price-tag">Arashiyama</span>
+                            </div>
+                        </a>
+                        <div class="airbnb-info">
+                            <h4>Arashiyama Area</h4>
+                            <p class="location">Quieter, near bamboo grove, further from nightlife</p>
+                            <p class="capacity">TBD</p>
+                            <a href="https://www.airbnb.com/s/Arashiyama--Kyoto--Japan/homes" target="_blank" class="airbnb-link">Browse Arashiyama listings →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kyoto: Things to Do -->
+            <div class="section-block">
+                <h3>Things to Do</h3>
+                <p class="section-intro">Temple overload is real. Pick a few that interest you rather than trying to see everything.</p>
+                <div id="kyoto-daytime" class="accordion-section"></div>
+            </div>
+
+            <!-- Kyoto: Food -->
+            <div class="section-block">
+                <h3>Food Options</h3>
+                <div id="kyoto-food" class="accordion-section"></div>
+            </div>
+
+            <!-- Kyoto: Drinks -->
+            <div class="section-block">
+                <h3>Drinks</h3>
+                <div id="kyoto-drinks" class="accordion-section"></div>
+            </div>
+
+            <!-- Kyoto Map -->
+            <div class="section-block map-section">
+                <h3>Explore the Map</h3>
+                <p class="section-intro">Click a pin to see activity details.</p>
+                <div id="kyoto-map" class="city-map"></div>
+                <div id="kyoto-legend" class="map-legend"></div>
+            </div>
+
+            <!-- Open Questions -->
+            <div class="section-block open-items">
+                <h3>Open Questions</h3>
+                <div class="questions-list">
+                    <div class="question-item">
+                        <span class="q-status">OPEN</span>
+                        <p>Day trip to Nara?</p>
+                    </div>
+                    <div class="question-item">
+                        <span class="q-status">OPEN</span>
+                        <p>Private onsen experience? They exist but add cost.</p>
+                    </div>
+                    <div class="question-item">
+                        <span class="q-status">OPEN</span>
+                        <p>How many nights in Kyoto?</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- OSAKA SECTION -->
+        <section class="city-content osaka-theme" id="osaka">
+            <div class="city-header">
+                <h2>大阪 <span>OSAKA</span></h2>
+                <p class="city-intro">MAYBE for 1 night?. Known for street food and nightlife. Only 15 minutes from Kyoto by train.</p>
+            </div>
+
+            <!-- Osaka Airbnb Options - TOP PRIORITY -->
+            <div class="section-block airbnb">
+                <h3>Accommodation</h3>
+                <p class="section-intro">Namba or Dotonbori area makes sense for walkability.</p>
+                <div class="airbnb-grid">
+                    <div class="airbnb-card">
+                        <a href="https://www.airbnb.com/s/Dotonbori--Osaka--Japan/homes" target="_blank" class="airbnb-img-link">
+                            <div class="airbnb-img" style="background-image: url('images/osaka-airbnb-1.jpg')">
+                                <span class="price-tag">Dotonbori</span>
+                            </div>
+                        </a>
+                        <div class="airbnb-info">
+                            <h4>Dotonbori Area</h4>
+                            <p class="location">Walking distance to everything, can be loud</p>
+                            <p class="capacity">TBD</p>
+                            <a href="https://www.airbnb.com/s/Dotonbori--Osaka--Japan/homes" target="_blank" class="airbnb-link">Browse Dotonbori listings →</a>
+                        </div>
+                    </div>
+                    <div class="airbnb-card">
+                        <a href="https://www.airbnb.com/s/Namba--Osaka--Japan/homes" target="_blank" class="airbnb-img-link">
+                            <div class="airbnb-img" style="background-image: url('images/osaka-airbnb-2.jpg')">
+                                <span class="price-tag">Namba</span>
+                            </div>
+                        </a>
+                        <div class="airbnb-info">
+                            <h4>Namba Station Area</h4>
+                            <p class="location">Good transit access</p>
+                            <p class="capacity">TBD</p>
+                            <a href="https://www.airbnb.com/s/Namba--Osaka--Japan/homes" target="_blank" class="airbnb-link">Browse Namba listings →</a>
+                        </div>
+                    </div>
+                    <div class="airbnb-card">
+                        <a href="https://www.airbnb.com/s/Shinsekai--Osaka--Japan/homes" target="_blank" class="airbnb-img-link">
+                            <div class="airbnb-img" style="background-image: url('images/osaka-airbnb-3.jpg')">
+                                <span class="price-tag">Shinsekai</span>
+                            </div>
+                        </a>
+                        <div class="airbnb-info">
+                            <h4>Shinsekai Area</h4>
+                            <p class="location">More local, slightly grittier</p>
+                            <p class="capacity">TBD</p>
+                            <a href="https://www.airbnb.com/s/Shinsekai--Osaka--Japan/homes" target="_blank" class="airbnb-link">Browse Shinsekai listings →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Osaka: Things to Do -->
+            <div class="section-block">
+                <h3>Things to Do</h3>
+                <div id="osaka-daytime" class="accordion-section"></div>
+            </div>
+
+            <!-- Osaka: Food -->
+            <div class="section-block">
+                <h3>Food Options</h3>
+                <p class="section-intro">Osaka is known as "Japan's kitchen." Street food is the main draw.</p>
+                <div id="osaka-food" class="accordion-section"></div>
+            </div>
+
+            <!-- Osaka: Drinks -->
+            <div class="section-block">
+                <h3>Drinks</h3>
+                <div id="osaka-drinks" class="accordion-section"></div>
+            </div>
+
+            <!-- Osaka Map -->
+            <div class="section-block map-section">
+                <h3>Explore the Map</h3>
+                <p class="section-intro">Click a pin to see activity details.</p>
+                <div id="osaka-map" class="city-map"></div>
+                <div id="osaka-legend" class="map-legend"></div>
+            </div>
+
+            <!-- Open Questions -->
+            <div class="section-block open-items">
+                <h3>Open Questions</h3>
+                <div class="questions-list">
+                    <div class="question-item">
+                        <span class="q-status">OPEN</span>
+                        <p>Universal Studios Japan?</p>
+                    </div>
+                    <div class="question-item">
+                        <span class="q-status">OPEN</span>
+                        <p>Day trip to Kobe for beef?</p>
+                    </div>
+                    <div class="question-item">
+                        <span class="q-status">OPEN</span>
+                        <p>Fly out of Osaka (KIX) or return to Tokyo (NRT/HND)?</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Contribution Section -->
+    <section class="contribute-section">
+        <div class="contribute-content">
+            <h2>Input Welcome</h2>
+            <p>Add suggestions, vote on options, or edit directly.</p>
+            <div class="contribute-options">
+                <a href="https://github.com/YOUR_USERNAME/JapanTrip2026/issues" class="contribute-btn" target="_blank">
+                    Open an Issue
+                </a>
+                <a href="https://github.com/YOUR_USERNAME/JapanTrip2026" class="contribute-btn secondary" target="_blank">
+                    Submit a PR
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-content">
+            <p class="footer-jp">いい旅を</p>
+            <p class="footer-en">Have a good trip</p>
+        </div>
+    </footer>
+
+    <!-- Activity Sidebar (shared across all maps) -->
+    <div class="activity-sidebar" id="activity-sidebar">
+        <button class="sidebar-close" aria-label="Close sidebar">&times;</button>
+        <div class="sidebar-content"></div>
+    </div>
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
