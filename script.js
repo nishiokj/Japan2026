@@ -293,7 +293,6 @@ const activitiesData = {
                 price: "Free",
                 url: "https://www.google.com/maps/place/Harajuku",
                 images: [
-                    "https://images.unsplash.com/photo-1667873584119-6a9d4376f42d?w=800",
                     "https://images.unsplash.com/photo-1593369855376-d1b385bcbcb0?w=800",
                     "https://images.unsplash.com/photo-1664806462678-5df01513f7b9?w=800"
                 ],
@@ -446,7 +445,6 @@ const activitiesData = {
                 price: "¥1,500-2,500",
                 url: "https://www.google.com/maps/place/Omoide+Yokocho",
                 images: [
-                    "https://images.unsplash.com/photo-1675857197778-223b59de19fe?w=800",
                     "https://images.unsplash.com/photo-1617870314635-fc819547ec11?w=800",
                     "https://images.unsplash.com/photo-1585988675248-4c75ca55cd26?w=800"
                 ],
@@ -596,7 +594,6 @@ const activitiesData = {
                 price: "¥1,500-2,000",
                 url: "https://www.google.com/maps/search/Gyukatsu+Motomura+Tokyo",
                 images: [
-                    "https://images.unsplash.com/photo-1667933159296-83286c17e8cf?w=800",
                     "https://images.unsplash.com/photo-1720792445167-c622bb1d8378?w=800"
                 ],
                 category: "Beef",
@@ -658,7 +655,6 @@ const activitiesData = {
                 price: "¥1,000-1,500 per monja",
                 url: "https://www.google.com/maps/place/Tsukishima",
                 images: [
-                    "https://images.unsplash.com/photo-1678294236894-ca0a16e66636?w=800",
                     "https://images.unsplash.com/photo-1714313109548-3a07b15df77f?w=800",
                     "https://images.unsplash.com/photo-1631773870335-a1811956c99b?w=800"
                 ],
@@ -741,7 +737,6 @@ const activitiesData = {
                 price: "¥1,500-10,000+/pour",
                 url: "https://www.google.com/maps/place/Zoetrope",
                 images: [
-                    "https://images.unsplash.com/photo-1695053979993-aa3401ef5694?w=800",
                     "https://images.unsplash.com/photo-1541491263892-731bc0c6a2ae?w=800",
                     "https://images.unsplash.com/photo-1718881951099-759d473a3dd5?w=800"
                 ],
@@ -891,7 +886,6 @@ const activitiesData = {
                 price: "¥500",
                 url: "https://www.shokoku-ji.jp/en/kinkakuji/",
                 images: [
-                    "https://images.unsplash.com/photo-1693235717655-bbde6aa879a2?w=800",
                     "https://images.unsplash.com/photo-1698137363944-d34de2b00bce?w=800",
                     "https://images.unsplash.com/photo-1610265082060-7234c9de51ab?w=800"
                 ],
@@ -977,7 +971,6 @@ const activitiesData = {
                 price: "¥1,500-3,000 for a graze",
                 url: "https://www.kyoto-nishiki.or.jp/en/",
                 images: [
-                    "https://images.unsplash.com/photo-1686538381343-ff6de76c8712?w=800",
                     "https://images.unsplash.com/photo-1701001909948-8048598fbc92?w=800",
                     "https://images.unsplash.com/photo-1732294346892-e0bb2cbc35b7?w=800"
                 ],
@@ -1448,15 +1441,33 @@ function initDecks() {
 
         // Touch events
         let isDragging = false;
+        let touchStartY = 0;
         deck.addEventListener('touchstart', (e) => {
+            // Ignore touches on the image carousel area
+            if (e.target.closest('.carousel-track, .carousel-btn, .carousel-dots')) {
+                isDragging = false;
+                return;
+            }
             isDragging = true;
             startX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
             deck.style.transition = 'none';
         }, { passive: true });
 
         deck.addEventListener('touchmove', (e) => {
             if (!isDragging) return;
             currentX = e.touches[0].clientX;
+            const currentY = e.touches[0].clientY;
+
+            // If vertical movement is greater than horizontal, cancel drag (user is scrolling page)
+            const diffX = Math.abs(currentX - startX);
+            const diffY = Math.abs(currentY - touchStartY);
+            if (diffY > diffX && diffY > 20) {
+                isDragging = false;
+                goToCard(currentIndex);
+                return;
+            }
+
             const diff = currentX - startX;
             const cardWidth = getCardWidth();
             const centerOffset = getCenterOffset();
@@ -1469,7 +1480,8 @@ function initDecks() {
             isDragging = false;
 
             const diff = currentX - startX;
-            const threshold = 50;
+            // Increased threshold for more deliberate swipes
+            const threshold = 80;
 
             if (diff < -threshold && currentIndex < cards.length - 1) {
                 goToCard(currentIndex + 1);
@@ -1482,8 +1494,8 @@ function initDecks() {
 
         // Mouse drag events
         deck.addEventListener('mousedown', (e) => {
-            // Ignore if clicking on buttons or links
-            if (e.target.closest('button, a')) return;
+            // Ignore if clicking on buttons, links, or carousel area
+            if (e.target.closest('button, a, .carousel-track, .carousel-dots')) return;
 
             activeDeck = deck;
             startX = e.clientX;
@@ -1539,7 +1551,8 @@ function initDecks() {
         activeDeck.classList.remove('dragging');
 
         const diff = state.currentX - state.startX;
-        const threshold = 50;
+        // Increased threshold for more deliberate swipes
+        const threshold = 80;
 
         if (diff < -threshold && state.currentIndex < state.cards.length - 1) {
             state.goToCard(state.currentIndex + 1);
@@ -1601,6 +1614,34 @@ function initCarousels() {
             const current = parseInt(e.target.dataset.index);
 
             updateCarousel(track, dots, counter, current, total);
+        }
+
+        // Handle tap on carousel slides (left half = prev, right half = next)
+        if (e.target.classList.contains('carousel-slide')) {
+            const slide = e.target;
+            const carousel = slide.closest('.card-carousel');
+            const track = carousel.querySelector('.carousel-track');
+            const slides = track.querySelectorAll('.carousel-slide');
+            const dots = carousel.querySelectorAll('.carousel-dot');
+            const counter = carousel.querySelector('.carousel-counter');
+
+            let current = parseInt(track.dataset.current) || 0;
+            const total = slides.length;
+
+            // Only navigate if there are multiple slides
+            if (total > 1) {
+                const rect = slide.getBoundingClientRect();
+                const tapX = e.clientX - rect.left;
+                const isRightSide = tapX > rect.width / 2;
+
+                if (isRightSide) {
+                    current = (current + 1) % total;
+                } else {
+                    current = (current - 1 + total) % total;
+                }
+
+                updateCarousel(track, dots, counter, current, total);
+            }
         }
     });
 
