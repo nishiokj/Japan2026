@@ -67,15 +67,21 @@ function formatPriceWithUSD(priceString) {
    ======================================== */
 function initTabs() {
     const tabs = document.querySelectorAll('.city-tab');
-    const contents = document.querySelectorAll('.city-content');
+    const cityPages = document.querySelectorAll('.city-page');
 
     // Set default city theme on body (Tokyo is default active)
     document.body.classList.add('tokyo-active');
+
+    // Initialize: show Tokyo pages by default
+    cityPages.forEach(page => {
+        page.classList.toggle('active', page.dataset.city === 'tokyo');
+    });
 
     tabs.forEach(tab => {
         tab.addEventListener('click', () => {
             const city = tab.dataset.city;
 
+            // Update tab active states
             tabs.forEach(t => t.classList.remove('active'));
             tab.classList.add('active');
 
@@ -83,47 +89,52 @@ function initTabs() {
             document.body.classList.remove('tokyo-active', 'kyoto-active', 'osaka-active');
             document.body.classList.add(`${city}-active`);
 
-            contents.forEach(content => {
-                content.classList.remove('active');
-                if (content.id === city) {
-                    content.classList.add('active');
-                }
+            // Hide all city pages, show selected city's pages
+            cityPages.forEach(page => {
+                page.classList.toggle('active', page.dataset.city === city);
             });
 
-            if (window.innerWidth <= 768) {
-                document.querySelector('.content-area').scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
+            // Scroll to first page of selected city
+            const firstPage = document.querySelector(`.city-page[data-city="${city}"]`);
+            if (firstPage) {
+                firstPage.scrollIntoView({ behavior: 'smooth' });
             }
         });
     });
 }
 
 /* ========================================
-   SCROLL EFFECTS
+   SCROLL EFFECTS + NAV POSITIONING
    ======================================== */
 function initScrollEffects() {
     const hero = document.querySelector('.hero');
     const nav = document.querySelector('.city-nav');
 
-    window.addEventListener('scroll', () => {
+    // Detect scroll position to toggle nav position
+    const handleScroll = () => {
         const scrolled = window.pageYOffset;
+        const heroHeight = hero ? hero.offsetHeight : window.innerHeight;
 
         if (hero) {
             const heroContent = hero.querySelector('.hero-content');
             const opacity = Math.max(0, 1 - scrolled / 400);
-            heroContent.style.opacity = opacity;
+            if (heroContent) heroContent.style.opacity = opacity;
         }
 
         if (nav) {
-            if (scrolled > 100) {
+            // Switch nav from bottom to top once we scroll past hero
+            if (scrolled > heroHeight - 100) {
+                nav.classList.add('sticky-top');
                 nav.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.5)';
             } else {
+                nav.classList.remove('sticky-top');
                 nav.style.boxShadow = 'none';
             }
         }
-    });
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Run once on init
 }
 
 /* ========================================
@@ -132,7 +143,7 @@ function initScrollEffects() {
 
 const activitiesData = {
     tokyo: {
-        morning: [
+        activities: [
             {
                 name: "Meiji Jingu + Yoyogi Park",
                 summary: "Built 1920 to honor Emperor Meiji—100,000 trees donated from across Japan",
@@ -199,9 +210,7 @@ const activitiesData = {
                 coords: { lat: 35.7189, lng: 139.7766 },
                 duration: "2-4 hours",
                 tips: "Friday/Saturday open until 9pm"
-            }
-        ],
-        daytime: [
+            },
             {
                 name: "Senso-ji Temple",
                 summary: "Founded 628 AD—Tokyo's oldest temple, 1,400 years before the city existed",
@@ -420,7 +429,7 @@ const activitiesData = {
                 tips: "North tower for bar, South for Fuji"
             }
         ],
-        evening: [
+        nightlife: [
             {
                 name: "Golden Gai",
                 summary: "Post-1945 black market bars—Tarantino and Coppola drink here",
@@ -461,7 +470,6 @@ const activitiesData = {
                 price: "¥1,500-3,000",
                 url: "https://www.google.com/maps/place/Nonbei+Yokocho",
                 images: [
-                    "https://images.unsplash.com/photo-1721736018999-f6285dc514c3?w=800",
                     "https://images.unsplash.com/photo-1570669231087-ddd48f16b775?w=800",
                     "https://images.unsplash.com/photo-1630615088688-9d62f18a41fc?w=800"
                 ],
@@ -553,6 +561,85 @@ const activitiesData = {
                 location: "Everywhere",
                 duration: "20-40 min",
                 tips: "Ichiran for solo, any place with a line for adventure"
+            },
+            {
+                name: "Popeye",
+                summary: "Japan's craft beer pioneer since 1985—70+ taps, newspaper-sized menu",
+                description: "Opened in 1985, this Ryogoku institution has more Japanese craft on tap than anywhere else. The menu is a newspaper. The food is designed to pair—try the lamb sausage. Near the sumo stadium, so go after a tournament. Tradeoff: It's far from central Tokyo (Ryogoku). Worth the trip if beer matters to you.",
+                price: "¥700-1,000/beer",
+                url: "https://beerclubpopeye.com/",
+                images: [
+                    "https://images.unsplash.com/photo-1763609787267-5cc32988967d?w=800",
+                    "https://images.unsplash.com/photo-1760967001400-25e5cadee277?w=800",
+                    "https://images.unsplash.com/photo-1596534634741-dce0ddebf838?w=800"
+                ],
+                category: "Craft Beer",
+                location: "Ryogoku",
+                coords: { lat: 35.6963, lng: 139.7963 },
+                duration: "1-2 hours",
+                tips: "Combine with sumo in Ryogoku"
+            },
+            {
+                name: "Zoetrope",
+                summary: "Discontinued Karuizawa and rare Ichiro's Malt—300+ bottles, 12 seats",
+                description: "The owner has bottles you can't find anywhere—discontinued Karuizawas, limited Ichiro's Malt. No cocktails, just whisky poured neat or with water. Quiet conversation only. Seats 12 at the bar. Tradeoff: ¥1,500-10,000+ per pour depending on rarity. No food. This is for whisky people.",
+                price: "¥1,500-10,000+/pour",
+                url: "https://www.google.com/maps/place/Zoetrope",
+                images: [
+                    "https://images.unsplash.com/photo-1541491263892-731bc0c6a2ae?w=800",
+                    "https://images.unsplash.com/photo-1718881951099-759d473a3dd5?w=800"
+                ],
+                category: "Whiskey",
+                location: "Shinjuku",
+                coords: { lat: 35.6895, lng: 139.7007 },
+                duration: "1-2 hours",
+                tips: "Ask owner for recommendations, he knows everything"
+            },
+            {
+                name: "Tachinomi (Standing Bars)",
+                summary: "Post-work drinking culture since the Edo period—¥300 beers, no seats",
+                description: "Stand-up bars near train stations where salarymen stop for one (or five) after work. Drinks are cheap (¥300-500), food is simple (edamame, fried things). No English menus. You order at the counter. Search Google Maps for 'tachinomi' in any neighborhood. Tradeoff: You're standing. For an hour. But the price and atmosphere can't be beat.",
+                price: "¥300-500/drink",
+                url: "https://www.google.com/maps/search/tachinomi+Tokyo",
+                images: [
+                    "https://images.unsplash.com/photo-1759301247382-9bac9fcf8ba6?w=800",
+                    "https://images.unsplash.com/photo-1655348495218-5847b68b6a00?w=800"
+                ],
+                category: "Local",
+                location: "Near any station",
+                duration: "30-60 min",
+                tips: "Point, smile, say 'biiru kudasai'"
+            },
+            {
+                name: "Nomihodai (All-You-Can-Drink)",
+                summary: "Standard Japanese office party format—unlimited drinks, 2-hour timer",
+                description: "Most izakayas offer nomihodai—timed all-you-can-drink plans. Beer, highballs, shochu, basic cocktails. Groups book a table, order food separately, and the drinks keep coming for 2 hours. It's the standard Japanese work party format. Tradeoff: Quality is 'quantity over finesse.' But the value is real if you're committed.",
+                price: "¥1,500-2,500 for 2 hours",
+                url: "https://www.google.com/maps/search/Izakaya+Tokyo",
+                images: [
+                    "https://images.unsplash.com/photo-1754228652704-2679d0a1c0b5?w=800",
+                    "https://images.unsplash.com/photo-1675002305563-9b562a005939?w=800",
+                    "https://images.unsplash.com/photo-1608060313204-295e532517df?w=800"
+                ],
+                category: "Value",
+                location: "Most izakayas",
+                duration: "2 hours",
+                tips: "Book for groups, order food too"
+            },
+            {
+                name: "NPB Baseball Game",
+                summary: "40,000 fans chanting in unison—Japan's answer to European football culture",
+                description: "Each team has coordinated chants with trumpets, drums, and 40,000 people singing in unison. Beer vendors in miniskirts climb stadium stairs with kegs on their backs. Yakult Swallows at Jingu Stadium is the intimate pick. Giants at Tokyo Dome is the big show. Season runs March-October. Tradeoff: Tickets sell out for popular games. Book ahead.",
+                price: "¥2,500-6,000",
+                url: "https://www.google.com/maps/place/Tokyo+Dome",
+                images: [
+                    "https://images.unsplash.com/photo-1622424114500-24202766581f?w=800",
+                    "https://images.unsplash.com/photo-1597473901815-3bcfb20a0037?w=800"
+                ],
+                category: "Experience",
+                location: "Jingu (Swallows) or Tokyo Dome (Giants)",
+                duration: "3-4 hours",
+                tips: "Jingu is more fun, Tokyo Dome is bigger"
             }
         ],
         food: [
@@ -712,87 +799,6 @@ const activitiesData = {
                 tips: "Yurakucho tracks for atmosphere"
             }
         ],
-        drinks: [
-            {
-                name: "Popeye",
-                summary: "Japan's craft beer pioneer since 1985—70+ taps, newspaper-sized menu",
-                description: "Opened in 1985, this Ryogoku institution has more Japanese craft on tap than anywhere else. The menu is a newspaper. The food is designed to pair—try the lamb sausage. Near the sumo stadium, so go after a tournament. Tradeoff: It's far from central Tokyo (Ryogoku). Worth the trip if beer matters to you.",
-                price: "¥700-1,000/beer",
-                url: "https://beerclubpopeye.com/",
-                images: [
-                    "https://images.unsplash.com/photo-1763609787267-5cc32988967d?w=800",
-                    "https://images.unsplash.com/photo-1760967001400-25e5cadee277?w=800",
-                    "https://images.unsplash.com/photo-1596534634741-dce0ddebf838?w=800"
-                ],
-                category: "Craft Beer",
-                location: "Ryogoku",
-                coords: { lat: 35.6963, lng: 139.7963 },
-                duration: "1-2 hours",
-                tips: "Combine with sumo in Ryogoku"
-            },
-            {
-                name: "Zoetrope",
-                summary: "Discontinued Karuizawa and rare Ichiro's Malt—300+ bottles, 12 seats",
-                description: "The owner has bottles you can't find anywhere—discontinued Karuizawas, limited Ichiro's Malt. No cocktails, just whisky poured neat or with water. Quiet conversation only. Seats 12 at the bar. Tradeoff: ¥1,500-10,000+ per pour depending on rarity. No food. This is for whisky people.",
-                price: "¥1,500-10,000+/pour",
-                url: "https://www.google.com/maps/place/Zoetrope",
-                images: [
-                    "https://images.unsplash.com/photo-1541491263892-731bc0c6a2ae?w=800",
-                    "https://images.unsplash.com/photo-1718881951099-759d473a3dd5?w=800"
-                ],
-                category: "Whiskey",
-                location: "Shinjuku",
-                coords: { lat: 35.6895, lng: 139.7007 },
-                duration: "1-2 hours",
-                tips: "Ask owner for recommendations, he knows everything"
-            },
-            {
-                name: "Tachinomi (Standing Bars)",
-                summary: "Post-work drinking culture since the Edo period—¥300 beers, no seats",
-                description: "Stand-up bars near train stations where salarymen stop for one (or five) after work. Drinks are cheap (¥300-500), food is simple (edamame, fried things). No English menus. You order at the counter. Search Google Maps for 'tachinomi' in any neighborhood. Tradeoff: You're standing. For an hour. But the price and atmosphere can't be beat.",
-                price: "¥300-500/drink",
-                url: "https://www.google.com/maps/search/tachinomi+Tokyo",
-                images: [
-                    "https://images.unsplash.com/photo-1759301247382-9bac9fcf8ba6?w=800",
-                    "https://images.unsplash.com/photo-1655348495218-5847b68b6a00?w=800"
-                ],
-                category: "Local",
-                location: "Near any station",
-                duration: "30-60 min",
-                tips: "Point, smile, say 'biiru kudasai'"
-            },
-            {
-                name: "Nomihodai (All-You-Can-Drink)",
-                summary: "Standard Japanese office party format—unlimited drinks, 2-hour timer",
-                description: "Most izakayas offer nomihodai—timed all-you-can-drink plans. Beer, highballs, shochu, basic cocktails. Groups book a table, order food separately, and the drinks keep coming for 2 hours. It's the standard Japanese work party format. Tradeoff: Quality is 'quantity over finesse.' But the value is real if you're committed.",
-                price: "¥1,500-2,500 for 2 hours",
-                url: "https://www.google.com/maps/search/Izakaya+Tokyo",
-                images: [
-                    "https://images.unsplash.com/photo-1754228652704-2679d0a1c0b5?w=800",
-                    "https://images.unsplash.com/photo-1675002305563-9b562a005939?w=800",
-                    "https://images.unsplash.com/photo-1608060313204-295e532517df?w=800"
-                ],
-                category: "Value",
-                location: "Most izakayas",
-                duration: "2 hours",
-                tips: "Book for groups, order food too"
-            },
-            {
-                name: "NPB Baseball Game",
-                summary: "40,000 fans chanting in unison—Japan's answer to European football culture",
-                description: "Each team has coordinated chants with trumpets, drums, and 40,000 people singing in unison. Beer vendors in miniskirts climb stadium stairs with kegs on their backs. Yakult Swallows at Jingu Stadium is the intimate pick. Giants at Tokyo Dome is the big show. Season runs March-October. Tradeoff: Tickets sell out for popular games. Book ahead.",
-                price: "¥2,500-6,000",
-                url: "https://www.google.com/maps/place/Tokyo+Dome",
-                images: [
-                    "https://images.unsplash.com/photo-1622424114500-24202766581f?w=800",
-                    "https://images.unsplash.com/photo-1597473901815-3bcfb20a0037?w=800"
-                ],
-                category: "Experience",
-                location: "Jingu (Swallows) or Tokyo Dome (Giants)",
-                duration: "3-4 hours",
-                tips: "Jingu is more fun, Tokyo Dome is bigger"
-            }
-        ],
         daytrips: [
             {
                 name: "Hakone",
@@ -817,7 +823,6 @@ const activitiesData = {
                 price: "¥1,500 round-trip train",
                 url: "https://www.google.com/maps/place/Kamakura",
                 images: [
-                    "https://images.unsplash.com/photo-1749869034096-1daa9214d668?w=800",
                     "https://images.unsplash.com/photo-1617817800495-ba4758d7fc7e?w=800",
                     "https://images.unsplash.com/photo-1753259167487-d8ffc8bc0dfd?w=800"
                 ],
@@ -861,7 +866,7 @@ const activitiesData = {
         ]
     },
     kyoto: {
-        daytime: [
+        activities: [
             {
                 name: "Fushimi Inari",
                 summary: "Memoirs of a Geisha filmed here—10,000 torii gates, open 24/7",
@@ -1027,7 +1032,7 @@ const activitiesData = {
                 tips: "Nakamura Tokichi for parfait"
             }
         ],
-        drinks: [
+        nightlife: [
             {
                 name: "Fushimi Sake District",
                 summary: "Gekkeikan's been brewing here since 1637—samurai drank this before battle",
@@ -1064,7 +1069,7 @@ const activitiesData = {
         ]
     },
     osaka: {
-        daytime: [
+        activities: [
             {
                 name: "Osaka Castle",
                 summary: "Toyotomi Hideyoshi built this in 1583—unified Japan from here",
@@ -1072,7 +1077,6 @@ const activitiesData = {
                 price: "Free (grounds) / ¥600 (interior)",
                 url: "https://www.osakacastle.net/english/",
                 images: [
-                    "https://images.unsplash.com/photo-1723983555971-8dafb9032039?w=800",
                     "https://images.unsplash.com/photo-1580138051672-325eb98b2749?w=800",
                     "https://images.unsplash.com/photo-1629569320448-a5504a24d384?w=800"
                 ],
@@ -1142,7 +1146,6 @@ const activitiesData = {
                 price: "¥500-800 for 8 pieces",
                 url: "https://www.google.com/maps/search/Takoyaki+Osaka",
                 images: [
-                    "https://images.unsplash.com/photo-1723802480207-8f3032039218?w=800",
                     "https://images.unsplash.com/photo-1652752731860-ef0cf518f13a?w=800",
                     "https://images.unsplash.com/photo-1738681335816-8e0df0aa9824?w=800"
                 ],
@@ -1173,7 +1176,6 @@ const activitiesData = {
                 price: "¥100-300/skewer",
                 url: "https://www.google.com/maps/search/Kushikatsu+Shinsekai",
                 images: [
-                    "https://images.unsplash.com/photo-1764411768946-26e1c34f475d?w=800",
                     "https://images.unsplash.com/photo-1761314783320-e0adc5a4d7db?w=800",
                     "https://images.unsplash.com/photo-1758964114278-5123b0a6feb8?w=800"
                 ],
@@ -1200,7 +1202,7 @@ const activitiesData = {
                 tips: "Go at 10am, eat standing"
             }
         ],
-        drinks: [
+        nightlife: [
             {
                 name: "Asahi Brewery Suita",
                 summary: "Free tour + free beer at Japan's oldest Asahi brewery (1891)",
@@ -1304,59 +1306,183 @@ function createScrollCard(item, cardIndex) {
     `;
 }
 
-function renderSection(containerId, title, items) {
+function renderCardGrid(containerId, items) {
     const container = document.getElementById(containerId);
     if (!container || !items || items.length === 0) return;
 
-    const dotsHtml = items.map((_, i) =>
-        `<button class="deck-dot ${i === 0 ? 'active' : ''}" data-index="${i}"></button>`
-    ).join('');
+    // Calculate cards per row based on viewport
+    const getCardsPerRow = () => {
+        if (window.innerWidth >= 1024) return 4;
+        if (window.innerWidth >= 768) return 3;
+        return 2;
+    };
 
-    const html = `
-        <div class="accordion-section-header">
-            <span class="accordion-section-title">${title}</span>
-            <span class="accordion-section-count">${items.length} options</span>
-        </div>
-        <div class="deck-container">
-            <div class="horizontal-scroll" data-current="0">
-                ${items.map((item, index) => createScrollCard(item, index)).join('')}
+    // Calculate how many rows fit in available height
+    const getRowCount = () => {
+        const viewportHeight = window.innerHeight;
+        // Get actual nav height from CSS variable
+        const navHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-height')) || 70;
+        const headerHeight = 40; // Page header (minimal)
+        const pageNavHeight = 32; // Grid pagination controls
+        const padding = 12; // Page padding (top + bottom)
+        const rowGap = 8; // Gap between rows
+        const cardHeight = window.innerWidth >= 768 ? 155 : 125; // Card + text height
+
+        const availableHeight = viewportHeight - navHeight - headerHeight - pageNavHeight - padding;
+        return Math.max(1, Math.floor(availableHeight / (cardHeight + rowGap)));
+    };
+
+    const cardsPerRow = getCardsPerRow();
+    const rowCount = getRowCount();
+    const cardsPerPage = cardsPerRow * rowCount;
+
+    // Split items into rows
+    const rows = [];
+    for (let i = 0; i < items.length; i += cardsPerRow) {
+        rows.push(items.slice(i, i + cardsPerRow));
+    }
+
+    // Only render visible rows, but track all rows for carousel
+    const visibleRows = rows.slice(0, rowCount);
+    const hasOverflow = rows.length > rowCount;
+
+    // Generate row HTML with carousel controls
+    const rowsHtml = rows.map((rowItems, rowIndex) => {
+        const cardsHtml = rowItems.map((item, idx) => createScrollCard(item, rowIndex * cardsPerRow + idx)).join('');
+        const hasMoreCards = rowItems.length > cardsPerRow;
+
+        return `
+            <div class="card-row-wrapper" data-row="${rowIndex}" style="${rowIndex >= rowCount ? 'display:none;' : ''}">
+                <div class="row-viewport">
+                    <div class="card-row" data-offset="0">
+                        ${cardsHtml}
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="deck-nav">
-            <button class="deck-arrow prev" aria-label="Previous card">‹</button>
-            <div class="deck-dots">${dotsHtml}</div>
-            <button class="deck-arrow next" aria-label="Next card">›</button>
-        </div>
-    `;
+        `;
+    }).join('');
 
-    container.innerHTML = html;
+    container.innerHTML = rowsHtml;
+
+    // Add row page indicator if overflow
+    if (hasOverflow) {
+        const pageCount = Math.ceil(rows.length / rowCount);
+        container.insertAdjacentHTML('beforeend', `
+            <div class="grid-page-nav">
+                <button class="grid-page-prev" disabled>‹</button>
+                <span class="grid-page-indicator">1 / ${pageCount}</span>
+                <button class="grid-page-next">›</button>
+            </div>
+        `);
+        initGridPagination(container, rows, rowCount, cardsPerRow);
+    }
+
+    // Initialize row carousels for overflow within rows
+    initRowCarousels(container, cardsPerRow);
+}
+
+function initGridPagination(container, rows, rowCount, cardsPerRow) {
+    let currentPage = 0;
+    const pageCount = Math.ceil(rows.length / rowCount);
+    const prevBtn = container.querySelector('.grid-page-prev');
+    const nextBtn = container.querySelector('.grid-page-next');
+    const indicator = container.querySelector('.grid-page-indicator');
+
+    const updatePage = () => {
+        const rowWrappers = container.querySelectorAll('.card-row-wrapper');
+        rowWrappers.forEach((wrapper, idx) => {
+            const startIdx = currentPage * rowCount;
+            const endIdx = startIdx + rowCount;
+            wrapper.style.display = (idx >= startIdx && idx < endIdx) ? '' : 'none';
+        });
+
+        if (indicator) indicator.textContent = `${currentPage + 1} / ${pageCount}`;
+        if (prevBtn) prevBtn.disabled = currentPage === 0;
+        if (nextBtn) nextBtn.disabled = currentPage >= pageCount - 1;
+    };
+
+    if (prevBtn) prevBtn.addEventListener('click', () => {
+        if (currentPage > 0) { currentPage--; updatePage(); }
+    });
+    if (nextBtn) nextBtn.addEventListener('click', () => {
+        if (currentPage < pageCount - 1) { currentPage++; updatePage(); }
+    });
+}
+
+function initRowCarousels(container, cardsPerRow) {
+    // Each row can be swiped horizontally if it has more than visible cards
+    const rowWrappers = container.querySelectorAll('.card-row-wrapper');
+
+    rowWrappers.forEach(wrapper => {
+        const row = wrapper.querySelector('.card-row');
+        const cards = row.querySelectorAll('.scroll-card');
+
+        if (cards.length <= cardsPerRow) return; // No need for carousel
+
+        let offset = 0;
+        const maxOffset = cards.length - cardsPerRow;
+
+        // Touch/swipe handling
+        let startX = 0;
+        let isDragging = false;
+
+        row.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+            isDragging = true;
+        }, { passive: true });
+
+        row.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            const diffX = startX - e.touches[0].clientX;
+            if (Math.abs(diffX) > 50) {
+                if (diffX > 0 && offset < maxOffset) {
+                    offset++;
+                } else if (diffX < 0 && offset > 0) {
+                    offset--;
+                }
+                updateRowPosition(row, offset, cardsPerRow);
+                isDragging = false;
+            }
+        }, { passive: true });
+
+        row.addEventListener('touchend', () => { isDragging = false; });
+    });
+}
+
+function updateRowPosition(row, offset, cardsPerRow) {
+    const cardWidth = row.querySelector('.scroll-card')?.offsetWidth || 0;
+    const gap = 12; // 0.75rem
+    const translateX = offset * (cardWidth + gap);
+    row.style.transform = `translateX(-${translateX}px)`;
+    row.dataset.offset = offset;
 }
 
 function renderAllCards() {
     // Tokyo sections
-    renderSection('tokyo-morning', 'Morning', activitiesData.tokyo.morning);
-    renderSection('tokyo-daytime', 'Daytime Districts & Sights', activitiesData.tokyo.daytime);
-    renderSection('tokyo-evening', 'Evening / Night', activitiesData.tokyo.evening);
-    renderSection('tokyo-food', 'Food', activitiesData.tokyo.food);
-    renderSection('tokyo-drinks', 'Drinks', activitiesData.tokyo.drinks);
-    renderSection('tokyo-daytrips', 'Day Trips', activitiesData.tokyo.daytrips);
+    renderCardGrid('tokyo-activities-grid', activitiesData.tokyo.activities);
+    renderCardGrid('tokyo-nightlife-grid', activitiesData.tokyo.nightlife);
+    renderCardGrid('tokyo-food-grid', activitiesData.tokyo.food);
+    renderCardGrid('tokyo-daytrips-grid', activitiesData.tokyo.daytrips);
 
     // Kyoto sections
-    renderSection('kyoto-daytime', 'Things to Do', activitiesData.kyoto.daytime);
-    renderSection('kyoto-food', 'Food', activitiesData.kyoto.food);
-    renderSection('kyoto-drinks', 'Drinks', activitiesData.kyoto.drinks);
+    renderCardGrid('kyoto-activities-grid', activitiesData.kyoto.activities);
+    renderCardGrid('kyoto-food-grid', activitiesData.kyoto.food);
+    renderCardGrid('kyoto-nightlife-grid', activitiesData.kyoto.nightlife);
 
     // Osaka sections
-    renderSection('osaka-daytime', 'Things to Do', activitiesData.osaka.daytime);
-    renderSection('osaka-food', 'Food', activitiesData.osaka.food);
-    renderSection('osaka-drinks', 'Drinks', activitiesData.osaka.drinks);
+    renderCardGrid('osaka-activities-grid', activitiesData.osaka.activities);
+    renderCardGrid('osaka-food-grid', activitiesData.osaka.food);
+    renderCardGrid('osaka-nightlife-grid', activitiesData.osaka.nightlife);
 }
 
 /* ========================================
-   DECK SWIPE NAVIGATION
+   DECK SWIPE NAVIGATION (DISABLED - using CSS grid)
    ======================================== */
 
 function initDecks() {
+    // Disabled: Using CSS grid layout instead of carousel
+    return;
+
     const decks = document.querySelectorAll('.horizontal-scroll');
     let activeDeck = null;
 
@@ -1439,9 +1565,12 @@ function initDecks() {
         // Initialize position
         requestAnimationFrame(() => goToCard(0));
 
-        // Touch events
+        // Touch events with direction locking for stable mobile swiping
         let isDragging = false;
         let touchStartY = 0;
+        let directionLocked = null; // null, 'horizontal', or 'vertical'
+        const DIRECTION_LOCK_THRESHOLD = 10; // pixels before locking direction
+
         deck.addEventListener('touchstart', (e) => {
             // Ignore touches on the image carousel area
             if (e.target.closest('.carousel-track, .carousel-btn, .carousel-dots')) {
@@ -1449,6 +1578,7 @@ function initDecks() {
                 return;
             }
             isDragging = true;
+            directionLocked = null;
             startX = e.touches[0].clientX;
             touchStartY = e.touches[0].clientY;
             deck.style.transition = 'none';
@@ -1456,16 +1586,32 @@ function initDecks() {
 
         deck.addEventListener('touchmove', (e) => {
             if (!isDragging) return;
+
             currentX = e.touches[0].clientX;
             const currentY = e.touches[0].clientY;
-
-            // If vertical movement is greater than horizontal, cancel drag (user is scrolling page)
             const diffX = Math.abs(currentX - startX);
             const diffY = Math.abs(currentY - touchStartY);
-            if (diffY > diffX && diffY > 20) {
+
+            // Lock direction once threshold is crossed
+            if (!directionLocked && (diffX > DIRECTION_LOCK_THRESHOLD || diffY > DIRECTION_LOCK_THRESHOLD)) {
+                // Use angle-based detection: horizontal if diffX > diffY * 1.2
+                if (diffX > diffY * 1.2) {
+                    directionLocked = 'horizontal';
+                } else {
+                    directionLocked = 'vertical';
+                }
+            }
+
+            // If vertical, cancel drag and let page scroll naturally
+            if (directionLocked === 'vertical') {
                 isDragging = false;
                 goToCard(currentIndex);
                 return;
+            }
+
+            // If horizontal, prevent default to stop page scrolling
+            if (directionLocked === 'horizontal') {
+                e.preventDefault();
             }
 
             const diff = currentX - startX;
@@ -1473,7 +1619,7 @@ function initDecks() {
             const centerOffset = getCenterOffset();
             const baseOffset = currentIndex * cardWidth - centerOffset;
             deck.style.transform = `translateX(-${baseOffset - diff}px)`;
-        }, { passive: true });
+        }, { passive: false }); // passive: false to allow preventDefault
 
         deck.addEventListener('touchend', (e) => {
             if (!isDragging) return;
@@ -1857,7 +2003,7 @@ function addActivityPins(map, city) {
 
     const categories = new Set();
 
-    // Iterate through all sections (morning, daytime, evening, food, drinks, daytrips)
+    // Iterate through all sections (activities, nightlife, food, daytrips)
     Object.values(cityData).forEach(section => {
         if (!Array.isArray(section)) return;
 
