@@ -3617,15 +3617,25 @@ body {
     }
 
     /* ===== CONTENT SECTION ===== */
-    /* CRITICAL: flex: 0 0 auto - size to content, NO growing to fill viewport */
+    /* CRITICAL FIX: Override ALL desktop properties that cause the gap */
     .scroll-card.expanded .card-content {
-        flex: 0 0 auto; /* DO NOT GROW - this was the gap bug */
+        /* Reset flex - desktop has flex: 1 1 50% which grows to fill */
+        flex: 0 0 auto !important;
+        /* CRITICAL: Reset height - desktop has height: 100% which forces full viewport */
+        height: auto !important;
+        /* Reset overflow - desktop has overflow-y: auto creating nested scroll */
+        overflow: visible !important;
+        overflow-y: visible !important;
+        /* Standard flex column layout */
         display: flex;
         flex-direction: column;
-        gap: 0.75rem; /* Uniform vertical rhythm */
+        gap: 0.75rem;
+        /* Padding */
         padding: 1rem;
         padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
-        min-height: 0; /* Flex child scroll trap fix */
+        /* Flex child fix */
+        min-height: 0;
+        max-height: none;
     }
 
     /* Header: title + price inline */
