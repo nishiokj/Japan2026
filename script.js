@@ -1509,13 +1509,54 @@ function renderCardGrid(containerId, items) {
     const totalCards = allCards.length;
     const pageCount = Math.ceil(totalCards / cardsPerPage);
 
-    // On mobile, show only first 4 cards (2x2 grid)
-    // On desktop, use pagination
+    // On mobile, wrap cards in page containers for swipe pagination
+    // On desktop, use click pagination
     if (isMobile) {
-        // Show only first 4 cards for 2x2 grid
-        allCards.forEach((card, idx) => {
-            card.style.display = idx < 4 ? '' : 'none';
-        });
+        // Group cards into pages of 4 (2x2 grid per page)
+        const cardsArray = Array.from(allCards);
+        const mobileCardsPerPage = 4;
+        const pageCount = Math.ceil(cardsArray.length / mobileCardsPerPage);
+
+        // Clear container and rebuild with page wrappers
+        container.innerHTML = '';
+
+        for (let p = 0; p < pageCount; p++) {
+            const pageDiv = document.createElement('div');
+            pageDiv.className = 'grid-page';
+            pageDiv.dataset.pageIndex = p;
+
+            const startIdx = p * mobileCardsPerPage;
+            const endIdx = Math.min(startIdx + mobileCardsPerPage, cardsArray.length);
+
+            for (let i = startIdx; i < endIdx; i++) {
+                pageDiv.appendChild(cardsArray[i]);
+            }
+
+            container.appendChild(pageDiv);
+        }
+
+        // Add swipe indicator dots if multiple pages
+        if (pageCount > 1) {
+            const indicatorDiv = document.createElement('div');
+            indicatorDiv.className = 'grid-swipe-indicator';
+            for (let i = 0; i < pageCount; i++) {
+                const dot = document.createElement('span');
+                dot.className = 'grid-swipe-dot' + (i === 0 ? ' active' : '');
+                dot.dataset.page = i;
+                indicatorDiv.appendChild(dot);
+            }
+            container.parentElement.appendChild(indicatorDiv);
+
+            // Update dots on scroll
+            container.addEventListener('scroll', () => {
+                const scrollLeft = container.scrollLeft;
+                const pageWidth = container.offsetWidth;
+                const currentPage = Math.round(scrollLeft / pageWidth);
+                indicatorDiv.querySelectorAll('.grid-swipe-dot').forEach((dot, idx) => {
+                    dot.classList.toggle('active', idx === currentPage);
+                });
+            }, { passive: true });
+        }
     } else {
         // Add pagination if needed on desktop
         if (pageCount > 1) {
@@ -2061,6 +2102,16 @@ function initCardExpansion() {
         grid.classList.add('has-expanded-card');
         card.classList.add('expanded');
 
+        // On mobile, also mark the page wrapper
+        const pageWrapper = card.closest('.grid-page');
+        if (pageWrapper) {
+            pageWrapper.classList.add('has-expanded-card');
+            // Hide sibling cards in this page
+            pageWrapper.querySelectorAll('.scroll-card').forEach(c => {
+                if (c !== card) c.style.display = 'none';
+            });
+        }
+
         // Add exit button if not already present
         if (!card.querySelector('.card-exit-btn')) {
             const exitBtn = document.createElement('button');
@@ -2088,9 +2139,18 @@ function initCardExpansion() {
 
         const card = expandedCard;
         const grid = card.closest('.card-grid');
+        const pageWrapper = card.closest('.grid-page');
 
         // Remove expanded class from card first
         card.classList.remove('expanded');
+
+        // On mobile, restore sibling cards and remove page wrapper class
+        if (pageWrapper) {
+            pageWrapper.classList.remove('has-expanded-card');
+            pageWrapper.querySelectorAll('.scroll-card').forEach(c => {
+                c.style.display = '';
+            });
+        }
 
         // Remove exit button
         const exitBtn = card.querySelector('.card-exit-btn');

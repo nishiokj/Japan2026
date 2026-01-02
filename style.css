@@ -1724,6 +1724,9 @@ body {
 
     /* Prevent overflow but allow pagination to be visible */
     overflow: hidden;
+
+    /* Position context for swipe indicator */
+    position: relative;
 }
 
 /* Wrapper for grid + pagination (sibling elements) */
@@ -2142,9 +2145,113 @@ body {
         display: none;
     }
 
-    /* Hide grid pagination on mobile */
+    /* Hide arrow pagination on mobile - use swipe instead */
     .grid-page-nav {
         display: none;
+    }
+
+    /* ========================================
+       MOBILE 2x2 GRID SWIPE PAGINATION
+       ======================================== */
+
+    /* Grid becomes horizontal scroll container for pages */
+    .card-grid {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        flex: 1 1 auto; /* Fill available height from city-page flex */
+        min-height: 0;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none; /* Firefox */
+        gap: 0;
+        padding: 0;
+    }
+
+    .card-grid::-webkit-scrollbar {
+        display: none; /* Chrome, Safari */
+    }
+
+    /* Each page wrapper contains 4 cards in 2x2 grid */
+    .card-grid .grid-page {
+        flex: 0 0 100%;
+        width: 100%;
+        min-width: 100%;
+        height: 100%;
+        min-height: 100%;
+        scroll-snap-align: center;
+        scroll-snap-stop: always;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+        gap: var(--grid-gap);
+        padding: 0 var(--page-padding-x, 0.5rem);
+        box-sizing: border-box;
+    }
+
+    /* Cards inside page wrapper fill their cells */
+    .card-grid .grid-page .scroll-card {
+        width: 100%;
+        height: 100%;
+        min-height: 0;
+        max-height: none;
+        display: flex;
+    }
+
+    /* Page indicator dots */
+    .grid-swipe-indicator {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.35rem 0;
+        position: absolute;
+        bottom: 0.25rem;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .grid-swipe-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--text-muted);
+        opacity: 0.4;
+        transition: all 0.2s ease;
+    }
+
+    .grid-swipe-dot.active {
+        opacity: 1;
+        background: var(--matcha);
+        transform: scale(1.2);
+    }
+
+    /* Hide indicator when card is expanded */
+    .card-grid.has-expanded-card ~ .grid-swipe-indicator {
+        display: none;
+    }
+
+    /* Handle expanded card within page wrappers */
+    .card-grid.has-expanded-card .grid-page:not(.has-expanded-card) {
+        display: none;
+    }
+
+    .grid-page.has-expanded-card {
+        display: flex;
+        flex: 1;
+        width: 100%;
+        height: 100%;
+        padding: 0;
+    }
+
+    /* Expanded card fills the page wrapper */
+    .grid-page.has-expanded-card .scroll-card.expanded {
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+        max-height: 100%;
     }
 }
 
@@ -3451,40 +3558,137 @@ body {
     font-size: 1.3rem;
 }
 
-/* Mobile expanded card - stacked layout */
+/* Mobile expanded card - FIXED: viewport-relative sizing, no overflow */
 @media (max-width: 767px) {
+    /* Container must be exactly viewport-sized */
+    .card-grid.has-expanded-card {
+        position: fixed;
+        inset: 0;
+        z-index: 500;
+        background: var(--bg-base);
+        display: flex;
+        padding: 0;
+        margin: 0;
+        overflow: hidden;
+    }
+
     .scroll-card.expanded {
         flex-direction: column;
+        width: 100vw;
+        height: 100dvh; /* Dynamic viewport height for mobile Safari */
+        max-height: 100dvh;
+        overflow: hidden;
+        position: relative;
     }
 
+    /* Image section - fixed 35% of viewport height */
     .scroll-card.expanded .card-carousel {
-        flex: 0 0 40%;
-        min-height: 200px;
+        flex: 0 0 35dvh;
+        height: 35dvh;
+        min-height: 0;
+        max-height: 35dvh;
+        overflow: hidden;
     }
 
+    .scroll-card.expanded .carousel-slide {
+        background-size: cover;
+        background-position: center;
+    }
+
+    .scroll-card.expanded .carousel-btn {
+        width: clamp(32px, 8vw, 44px);
+        height: clamp(32px, 8vw, 44px);
+        font-size: clamp(1rem, 3vw, 1.3rem);
+    }
+
+    /* Content section - fills remaining space with scroll */
     .scroll-card.expanded .card-content {
-        flex: 1 1 60%;
-        padding: 1rem;
+        flex: 1 1 auto;
+        height: calc(65dvh - env(safe-area-inset-bottom, 0px));
+        max-height: calc(65dvh - env(safe-area-inset-bottom, 0px));
+        padding: clamp(0.75rem, 3vw, 1.25rem);
+        padding-bottom: calc(clamp(0.75rem, 3vw, 1.25rem) + env(safe-area-inset-bottom, 0px));
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+        display: flex;
+        flex-direction: column;
+        gap: clamp(0.5rem, 2vw, 0.75rem);
+    }
+
+    /* Typography scales with viewport */
+    .scroll-card.expanded .card-header {
+        flex-shrink: 0;
+        margin-bottom: 0;
     }
 
     .scroll-card.expanded .card-title {
-        font-size: 1.2rem;
+        font-size: clamp(1rem, 4.5vw, 1.4rem);
+        line-height: 1.25;
+        margin-bottom: 0.25rem;
+    }
+
+    .scroll-card.expanded .card-price {
+        font-size: clamp(0.7rem, 2.5vw, 0.85rem);
+        padding: clamp(0.25rem, 1vw, 0.4rem) clamp(0.4rem, 1.5vw, 0.75rem);
+        flex-shrink: 0;
     }
 
     .scroll-card.expanded .card-summary {
-        font-size: 0.9rem;
+        font-size: clamp(0.8rem, 3vw, 0.95rem);
+        line-height: 1.5;
+        margin-bottom: 0;
+        flex-shrink: 0;
+    }
+
+    .scroll-card.expanded .description-wrapper {
+        flex: 0 1 auto;
+        min-height: 0;
     }
 
     .scroll-card.expanded .card-description {
-        font-size: 0.85rem;
+        font-size: clamp(0.75rem, 2.8vw, 0.9rem);
+        line-height: 1.65;
+        margin-bottom: clamp(0.5rem, 2vw, 1rem);
     }
 
+    .scroll-card.expanded .card-meta {
+        font-size: clamp(0.7rem, 2.5vw, 0.85rem);
+        gap: clamp(0.35rem, 1.5vw, 0.5rem);
+        margin-bottom: clamp(0.5rem, 2vw, 1rem);
+        flex-shrink: 0;
+    }
+
+    .scroll-card.expanded .card-meta span {
+        padding: clamp(0.3rem, 1vw, 0.5rem) 0;
+    }
+
+    .scroll-card.expanded .card-link {
+        padding: clamp(0.6rem, 2.5vw, 0.75rem) clamp(1rem, 4vw, 1.5rem);
+        font-size: clamp(0.8rem, 3vw, 0.9rem);
+        margin-top: auto;
+        flex-shrink: 0;
+    }
+
+    /* Exit button - top right, always accessible */
     .card-exit-btn {
-        top: 0.5rem;
-        right: 0.5rem;
-        width: 36px;
-        height: 36px;
-        font-size: 1.25rem;
+        position: absolute;
+        top: clamp(0.5rem, 2vw, 1rem);
+        right: clamp(0.5rem, 2vw, 1rem);
+        width: clamp(36px, 10vw, 44px);
+        height: clamp(36px, 10vw, 44px);
+        font-size: clamp(1.25rem, 5vw, 1.5rem);
+        z-index: 510;
+    }
+
+    /* Carousel navigation for expanded mobile */
+    .scroll-card.expanded .carousel-indicators {
+        bottom: 0.5rem;
+    }
+
+    .scroll-card.expanded .carousel-dot {
+        width: 6px;
+        height: 6px;
     }
 }
 
