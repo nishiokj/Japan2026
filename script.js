@@ -152,8 +152,8 @@ const activitiesData = {
                 price: "¥13,000",
                 url: "https://www.samurai-theater.com/en/trial_cutting/",
                 images: [
-                    "https://images.unsplash.com/photo-1671015522549-e7aa41ded44f?w=800",
-                    "https://images.unsplash.com/photo-1580130732478-4e339fb6836f?w=800"
+                    "images/samurai-cutting.jpeg",
+                    "images/samurai_sword_cutting.jpeg"
                 ],
                 category: "Experience",
                 location: "Shinjuku",
@@ -169,7 +169,7 @@ const activitiesData = {
                 url: "https://www.japan-guide.com/e/e2011.html",
                 images: [
                     "https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=800",
-                    "https://images.unsplash.com/photo-1614932750312-440cdfc45fea?w=800"
+                    "images/hanami.jpeg"
                 ],
                 category: "Seasonal",
                 location: "Ueno / Meguro / Chidorigafuchi",
@@ -184,8 +184,8 @@ const activitiesData = {
                 price: "¥3,000-8,000",
                 url: "https://www.tokyo-dome.co.jp/en/",
                 images: [
-                    "images/tokyo-dome1.jpg",
-                    "https://images.unsplash.com/photo-1516834474-6e704de7820e?w=800"
+                    "images/tokyo-stadium.jpeg",
+                    "images/tokyo-dome1.jpeg"
                 ],
                 category: "Sports",
                 location: "Bunkyo",
@@ -201,7 +201,7 @@ const activitiesData = {
                 url: "https://www.sumo.or.jp/En/",
                 images: [
                     "https://images.unsplash.com/photo-1574908445051-d9e0c2f4f763?w=800",
-                    "https://images.unsplash.com/photo-1540324155974-7523202daa3f?w=800"
+                    "images/sumo.jpeg"
                 ],
                 category: "Experience",
                 location: "Ryogoku",
@@ -224,23 +224,6 @@ const activitiesData = {
                 coords: { lat: 35.6764, lng: 139.6993 },
                 duration: "1-2 hours",
                 tips: "Before 9am or you'll share it with tour buses"
-            },
-            {
-                name: "Shinjuku Gyoen",
-                summary: "Former Imperial garden since 1906—one of Tokyo's best-kept cherry blossom spots",
-                description: "Japanese, English, and French gardens in one park—each section feels like a different country. Alcohol is banned, which keeps out the rowdy hanami parties. During cherry blossom season (late March–early April), 1,000+ trees bloom and it's one of the few places you can actually enjoy them without fighting for space. Tradeoff: Closes at 4:30pm in winter, 6pm in summer. No re-entry.",
-                price: "¥500",
-                url: "https://fng.or.jp/shinjuku/en/",
-                images: [
-                    "https://images.unsplash.com/photo-1603039066999-7b318f3a5dad?w=800",
-                    "https://images.unsplash.com/photo-1607753882924-edf787e8e8d2?w=800",
-                    "https://images.unsplash.com/photo-1572726320267-a3fffcddf105?w=800"
-                ],
-                category: "Park",
-                location: "Shinjuku",
-                coords: { lat: 35.6852, lng: 139.7100 },
-                duration: "1-2 hours",
-                tips: "Shinjuku Gyoenmae exit, not Shinjuku Station"
             },
             {
                 name: "Edo-Tokyo Museum",
@@ -266,10 +249,9 @@ const activitiesData = {
                 price: "¥1,000",
                 url: "https://www.tnm.jp/?lang=en",
                 images: [
-                    "images/tokyo-national-museum.jpg",
-                    "https://images.unsplash.com/photo-1677774398078-dfebffbfcd54?w=800",
                     "https://images.unsplash.com/photo-1541689507962-7658adb8aa70?w=800",
-                    "https://images.unsplash.com/photo-1677774396192-66dc8824719e?w=800"
+                    "images/tokyo-museum.jpeg",
+                    "images/tokyo-national-museum.jpg"
                 ],
                 category: "Museum",
                 location: "Ueno",
@@ -284,8 +266,8 @@ const activitiesData = {
                 price: "Free",
                 url: "https://www.senso-ji.jp/english/",
                 images: [
-                    "https://images.unsplash.com/photo-1748878665884-00afa881e960?w=800",
-                    "https://images.unsplash.com/photo-1580167227251-be70f01b0c51?w=800"
+                    "https://images.unsplash.com/photo-1580167227251-be70f01b0c51?w=800",
+                    "images/buddha.jpeg"
                 ],
                 category: "Temple",
                 location: "Asakusa",
@@ -352,8 +334,7 @@ const activitiesData = {
                 url: "https://www.google.com/maps/place/Akihabara",
                 images: [
                     "https://images.unsplash.com/photo-1613487957484-32c977a8bd62?w=800",
-                    "https://images.unsplash.com/photo-1580094573009-7a220cc896b2?w=800",
-                    "https://images.unsplash.com/photo-1561172317-5427a31ef91e?w=800"
+                    "images/anime.jpeg"
                 ],
                 category: "District",
                 location: "Akihabara",
@@ -601,6 +582,7 @@ const activitiesData = {
                 url: "https://www.google.com/maps/place/Kabukicho",
                 images: [
                     "https://images.unsplash.com/photo-1552258694-1d83c5b9d2b3?w=800",
+                    "images/kabukicho.jpeg",
                     "https://images.unsplash.com/photo-1558632328-465f59aff245?w=800",
                     "https://images.unsplash.com/photo-1522209959493-d8b44d545931?w=800"
                 ],
@@ -999,8 +981,7 @@ const activitiesData = {
                 url: "https://www.google.com/maps/place/Yokohama",
                 images: [
                     "https://images.unsplash.com/photo-1587474064565-922e1178ec8f?w=800",
-                    "https://images.unsplash.com/photo-1604674286849-81c0fb34ed4c?w=800",
-                    "https://images.unsplash.com/photo-1529921946836-396661f0e442?w=800"
+                    "images/yokohama.jpeg"
                 ],
                 category: "Day Trip",
                 location: "30 min from Shibuya",
