@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderAllCards();
     initDecks();
     initCarousels();
+    initAirbnbCarousels();
     initCardExpansion();
 });
 
@@ -1494,6 +1495,7 @@ function renderCardGrid(containerId, items) {
     const columns = getColumns();
     const rows = getRows();
     const cardsPerPage = columns * rows;
+    const isMobile = window.innerWidth < 768;
 
     // Render all cards directly (no row wrappers)
     const cardsHtml = items.map((item, idx) => createScrollCard(item, idx)).join('');
@@ -1507,27 +1509,32 @@ function renderCardGrid(containerId, items) {
     const totalCards = allCards.length;
     const pageCount = Math.ceil(totalCards / cardsPerPage);
 
-    // Add pagination if needed
-    if (pageCount > 1) {
-        // Create pagination container outside the grid
-        const paginationHtml = `
-            <div class="grid-page-nav">
-                <button class="grid-page-prev" disabled>‹</button>
-                <span class="grid-page-indicator">1 / ${pageCount}</span>
-                <button class="grid-page-next">›</button>
-            </div>
-        `;
-        container.insertAdjacentHTML('afterend', paginationHtml);
+    // On mobile, show all cards (horizontal scroll handles navigation)
+    // On desktop, use pagination
+    if (isMobile) {
+        // Show all cards for mobile horizontal scroll
+        allCards.forEach(card => card.style.display = '');
+    } else {
+        // Add pagination if needed on desktop
+        if (pageCount > 1) {
+            const paginationHtml = `
+                <div class="grid-page-nav">
+                    <button class="grid-page-prev" disabled>‹</button>
+                    <span class="grid-page-indicator">1 / ${pageCount}</span>
+                    <button class="grid-page-next">›</button>
+                </div>
+            `;
+            container.insertAdjacentHTML('afterend', paginationHtml);
 
-        // Move pagination to correct location (after grid, inside city-page)
-        const pagination = container.nextElementSibling;
-        if (pagination && pagination.classList.contains('grid-page-nav')) {
-            initGridPagination(container, allCards, cardsPerPage, pagination, pageCount);
+            const pagination = container.nextElementSibling;
+            if (pagination && pagination.classList.contains('grid-page-nav')) {
+                initGridPagination(container, allCards, cardsPerPage, pagination, pageCount);
+            }
         }
-    }
 
-    // Initially show only first page
-    showPage(allCards, 0, cardsPerPage);
+        // Initially show only first page on desktop
+        showPage(allCards, 0, cardsPerPage);
+    }
 }
 
 function showPage(cards, pageIndex, cardsPerPage) {
@@ -1592,6 +1599,60 @@ function renderAllCards() {
     renderCardGrid('osaka-activities-grid', activitiesData.osaka.activities);
     renderCardGrid('osaka-food-grid', activitiesData.osaka.food);
     renderCardGrid('osaka-nightlife-grid', activitiesData.osaka.nightlife);
+}
+
+/* ========================================
+   AIRBNB CAROUSEL NAVIGATION
+   ======================================== */
+
+function initAirbnbCarousels() {
+    const carousels = document.querySelectorAll('.airbnb-carousel');
+
+    carousels.forEach(carousel => {
+        const grid = carousel.querySelector('.airbnb-grid-full');
+        const prevBtn = carousel.querySelector('.airbnb-nav-prev');
+        const nextBtn = carousel.querySelector('.airbnb-nav-next');
+        const cards = grid.querySelectorAll('.airbnb-card-large');
+
+        if (!grid || cards.length === 0) return;
+
+        // Get card width including gap
+        const getCardWidth = () => {
+            const card = cards[0];
+            const style = getComputedStyle(grid);
+            const gap = parseFloat(style.gap) || 16;
+            return card.offsetWidth + gap;
+        };
+
+        // Update button states based on scroll position
+        const updateButtons = () => {
+            const scrollLeft = grid.scrollLeft;
+            const maxScroll = grid.scrollWidth - grid.clientWidth;
+
+            if (prevBtn) prevBtn.disabled = scrollLeft <= 0;
+            if (nextBtn) nextBtn.disabled = scrollLeft >= maxScroll - 1;
+        };
+
+        // Scroll to next card
+        const scrollNext = () => {
+            const cardWidth = getCardWidth();
+            grid.scrollBy({ left: cardWidth, behavior: 'smooth' });
+        };
+
+        // Scroll to previous card
+        const scrollPrev = () => {
+            const cardWidth = getCardWidth();
+            grid.scrollBy({ left: -cardWidth, behavior: 'smooth' });
+        };
+
+        // Event listeners
+        if (prevBtn) prevBtn.addEventListener('click', scrollPrev);
+        if (nextBtn) nextBtn.addEventListener('click', scrollNext);
+        grid.addEventListener('scroll', updateButtons);
+
+        // Initial button state
+        updateButtons();
+    });
 }
 
 /* ========================================
