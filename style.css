@@ -3558,7 +3558,7 @@ body {
     font-size: 1.3rem;
 }
 
-/* Mobile expanded card - Content-driven layout with aspect-ratio image */
+/* Mobile expanded card - Document-flow layout, no viewport-height traps */
 @media (max-width: 767px) {
     /* Full-screen takeover container */
     .card-grid.has-expanded-card {
@@ -3572,37 +3572,41 @@ body {
         overflow: hidden;
     }
 
-    /* Card fills viewport but scrolls internally */
+    /* Card is the scroll container - content flows naturally inside */
     .scroll-card.expanded {
         flex-direction: column;
         width: 100vw;
         height: 100dvh;
+        max-height: -webkit-fill-available; /* iOS Safari fix */
         overflow-y: auto;
         overflow-x: hidden;
         -webkit-overflow-scrolling: touch;
         position: relative;
     }
 
-    /* Image section - aspect-ratio driven, NOT fixed height */
+    /* ===== IMAGE SECTION ===== */
+    /* Fixed height region with contained image - no cropping */
     .scroll-card.expanded .card-carousel {
-        flex: 0 0 auto; /* Don't grow or shrink, size by content */
+        flex: 0 0 auto;
         width: 100%;
-        aspect-ratio: 4 / 3; /* Natural image proportion */
-        max-height: 45dvh; /* Cap at 45% but prefer aspect-ratio */
-        height: auto;
-        min-height: 0;
+        height: 40dvh; /* Fixed proportion of viewport */
+        min-height: 180px;
+        max-height: 320px; /* Absolute cap for very tall phones */
+        background: var(--kuro-cha); /* Dark letterbox background */
         overflow: hidden;
+        position: relative;
     }
 
     .scroll-card.expanded .carousel-track {
         height: 100%;
     }
 
-    /* Image preserves TOP, not center - no head cropping */
+    /* CONTAIN shows full image, letterboxed - NO head cropping */
     .scroll-card.expanded .carousel-slide {
-        background-size: cover;
-        background-position: top center; /* Preserve top of image */
-        background-repeat: no-repeat;
+        background-size: contain !important;
+        background-position: center !important;
+        background-repeat: no-repeat !important;
+        background-color: var(--kuro-cha);
     }
 
     .scroll-card.expanded .carousel-btn {
@@ -3612,24 +3616,25 @@ body {
         opacity: 1;
     }
 
-    /* Content section - flows naturally, scrolls with card */
+    /* ===== CONTENT SECTION ===== */
+    /* CRITICAL: flex: 0 0 auto - size to content, NO growing to fill viewport */
     .scroll-card.expanded .card-content {
-        flex: 1 0 auto; /* Grow to fill, don't shrink below content */
+        flex: 0 0 auto; /* DO NOT GROW - this was the gap bug */
         display: flex;
         flex-direction: column;
-        gap: 0.75rem; /* Single source of vertical rhythm */
+        gap: 0.75rem; /* Uniform vertical rhythm */
         padding: 1rem;
-        padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
-        overflow: visible; /* Let parent card scroll */
+        padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
+        min-height: 0; /* Flex child scroll trap fix */
     }
 
-    /* Header block - title + price, tight spacing */
+    /* Header: title + price inline */
     .scroll-card.expanded .card-header {
         display: flex;
         flex-wrap: wrap;
         align-items: baseline;
         gap: 0.5rem;
-        margin: 0; /* gap handles spacing */
+        margin: 0;
     }
 
     .scroll-card.expanded .card-title {
@@ -3646,24 +3651,28 @@ body {
         flex-shrink: 0;
     }
 
-    /* Summary - italic subtitle, controlled spacing */
+    /* Summary: italic subtitle - immediately after header */
     .scroll-card.expanded .card-summary {
         font-size: clamp(0.85rem, 3.5vw, 0.95rem);
         line-height: 1.5;
-        margin: 0; /* gap handles spacing */
+        margin: 0;
         color: var(--text-secondary);
         font-style: italic;
     }
 
-    /* Description wrapper - contains paragraph */
+    /* Description wrapper + text - immediately after summary */
     .scroll-card.expanded .description-wrapper {
         margin: 0;
+        display: block;
+        max-height: none;
+        overflow: visible;
     }
 
     .scroll-card.expanded .card-description {
         font-size: clamp(0.8rem, 3vw, 0.9rem);
         line-height: 1.7;
-        margin: 0; /* gap handles spacing */
+        margin: 0;
+        padding: 0;
     }
 
     /* Meta info - stacked list */
@@ -3685,14 +3694,16 @@ body {
         border-bottom: none;
     }
 
-    /* CTA button - anchored at bottom with auto margin */
+    /* CTA button - NO margin-top:auto, flows naturally after meta */
     .scroll-card.expanded .card-link {
-        margin-top: auto;
+        margin: 0; /* NO auto margin - was pushing to bottom creating gap */
+        margin-top: 0.5rem; /* Small extra space before CTA */
         padding: 0.75rem 1.25rem;
         font-size: 0.85rem;
+        align-self: flex-start; /* Don't stretch full width */
     }
 
-    /* Exit button - fixed position within card */
+    /* Exit button - fixed to viewport */
     .scroll-card.expanded .card-exit-btn {
         position: fixed;
         top: clamp(0.75rem, 3vw, 1rem);
