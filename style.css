@@ -2091,19 +2091,19 @@ body {
 
     /* 2. PRICE TAG - styled in separate mobile block below */
 
-    /* 3. SUMMARY - grows to fill remaining space with proper line clamp */
+    /* 3. SUMMARY - grows to fill remaining space, truncate only at boundary */
     .card-grid .card-summary {
         display: -webkit-box;
         -webkit-box-orient: vertical;
-        -webkit-line-clamp: 2; /* Show 2 lines max */
+        -webkit-line-clamp: 10; /* High number - container height is the real limit */
         overflow: hidden;
-        text-overflow: ellipsis;
         font-size: 0.45rem;
-        line-height: 1.25;
+        line-height: 1.3;
         color: var(--text-muted);
         margin: 0;
         flex: 1 1 auto;
         min-height: 0;
+        /* Container height limits visible lines, clamp adds ellipsis to last visible line */
     }
 
     /* Meta at bottom - single line */
@@ -2164,8 +2164,8 @@ body {
     }
 
     .card-grid .card-summary {
-        -webkit-line-clamp: 1;
         font-size: 0.4rem;
+        /* Keep high line-clamp - container height is the limit */
     }
 
     .card-grid .card-meta {
