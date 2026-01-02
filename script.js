@@ -1480,32 +1480,16 @@ function renderCardGrid(containerId, items) {
     const container = document.getElementById(containerId);
     if (!container || !items || items.length === 0) return;
 
-    // Get column count from CSS
+    // Get column count from CSS - matches media queries
     const getColumns = () => {
         if (window.innerWidth >= 1024) return 4;
         if (window.innerWidth >= 768) return 3;
         return 2;
     };
 
-    // Calculate rows that fit
-    const getRows = () => {
-        // More accurate height calculation based on viewport and CSS variables
-        const vh = window.innerHeight;
-        const navHeight = window.innerWidth >= 768 ? 80 : 70;
-        const headerHeight = window.innerWidth >= 768 ? 40 : 32;
-        const paginationHeight = window.innerWidth >= 768 ? 40 : 32;
-        const padding = window.innerWidth >= 768 ? 32 : 24; // top + bottom
-        const gap = window.innerWidth >= 768 ? 12 : 8;
-
-        // Available height for cards
-        const available = vh - navHeight - headerHeight - paginationHeight - padding - gap;
-
-        // Each row needs: card height (handled by CSS flex)
-        // Estimate: on desktop ~200px per row, mobile ~150px
-        const rowHeight = window.innerWidth >= 768 ? 200 : 150;
-
-        return Math.max(1, Math.floor(available / (rowHeight + gap)));
-    };
+    // Fixed 2 rows max - CSS handles minimum card sizing
+    // This prevents tiny cramped cards and provides consistent UX
+    const getRows = () => 2;
 
     const columns = getColumns();
     const rows = getRows();

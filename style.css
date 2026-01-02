@@ -1639,8 +1639,13 @@ a:hover {
     --header-height: 2.5rem;
     --grid-gap: 0.75rem;
     --pagination-height: 2.5rem;
-    --card-image-height: 120px;
-    --card-text-height: 80px;
+
+    /* MINIMUM card dimensions - cards will never be smaller than this */
+    --card-min-height: 220px;
+    --card-min-width: 200px;
+
+    /* Safe area for iOS Safari bottom bar */
+    --safe-area-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 /* Body scroll container */
@@ -1658,9 +1663,13 @@ body {
 /* Hero section - first snap point */
 .hero {
     height: 100vh;
+    height: 100dvh; /* Dynamic viewport for mobile */
     min-height: 100vh;
+    min-height: 100dvh;
     scroll-snap-align: start;
     position: relative;
+    /* Account for safe areas on hero too */
+    padding-bottom: var(--safe-area-bottom);
 }
 
 /* Nav bar - always fixed at top */
@@ -1686,20 +1695,22 @@ body {
 
 /* Each category page - proper height calculation */
 .city-page {
-    /* Full viewport height */
-    height: 100vh;
-    min-height: 100vh;
+    /* Full viewport height minus safe areas */
+    height: calc(100vh - var(--safe-area-bottom));
+    height: calc(100dvh - var(--safe-area-bottom)); /* Dynamic viewport for mobile */
+    min-height: calc(100vh - var(--safe-area-bottom));
+    min-height: calc(100dvh - var(--safe-area-bottom));
     scroll-snap-align: start;
 
     /* Flex column layout */
     display: flex;
     flex-direction: column;
 
-    /* Padding that accounts for fixed nav */
+    /* Padding that accounts for fixed nav AND safe area */
     padding-top: calc(var(--nav-height) + var(--page-padding-top));
     padding-left: var(--page-padding-x);
     padding-right: var(--page-padding-x);
-    padding-bottom: var(--page-padding-bottom);
+    padding-bottom: calc(var(--page-padding-bottom) + var(--safe-area-bottom));
 
     /* Box model */
     box-sizing: border-box;
@@ -1767,11 +1778,12 @@ body {
     flex: 1 1 auto;
     min-height: 0; /* Critical for flex shrinking */
 
-    /* Grid layout - use dynamic row count from JS */
-    --grid-rows: 3; /* Default, overridden by JS */
+    /* Grid layout - MINIMUM card height enforced, max 2 rows */
+    --grid-rows: 2; /* Max 2 rows for cleaner UX */
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(var(--grid-rows), 1fr);
+    /* Each row gets equal share of space, but never less than minimum */
+    grid-template-rows: repeat(var(--grid-rows), minmax(var(--card-min-height), 1fr));
     gap: var(--grid-gap);
 
     /* Content alignment */
@@ -1957,10 +1969,12 @@ body {
     :root {
         --nav-height: 80px;
         --page-padding-x: 1.5rem;
+        --card-min-height: 200px;
     }
 
     .card-grid {
         grid-template-columns: repeat(3, 1fr);
+        --grid-rows: 2;
     }
 
     .card-grid .card-carousel {
@@ -1976,34 +1990,38 @@ body {
 @media (max-width: 767px) {
     :root {
         --nav-height: 70px;
-        --page-padding-x: 1rem;
-        --page-padding-top: 0.75rem;
-        --page-padding-bottom: 0.75rem;
-        --header-height: 2rem;
+        --page-padding-x: 0.75rem;
+        --page-padding-top: 0.5rem;
+        --page-padding-bottom: 0.5rem;
+        --header-height: 1.75rem;
         --grid-gap: 0.5rem;
         --pagination-height: 2rem;
+        /* Smaller minimum card height for mobile */
+        --card-min-height: 160px;
     }
 
     .card-grid {
         grid-template-columns: repeat(2, 1fr);
+        /* Cap at 2 rows on mobile for cleaner UX */
+        --grid-rows: 2;
     }
 
     .city-page .page-header h3 {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
     }
 
     .card-grid .card-carousel {
-        flex: 0 0 60%;
+        flex: 0 0 55%;
     }
 
     .card-grid .card-content {
-        flex: 1 1 40%;
-        padding: 0.35rem;
+        flex: 1 1 45%;
+        padding: 0.4rem;
     }
 
     .card-grid .card-title {
-        font-size: 0.7rem;
-        -webkit-line-clamp: 1;
+        font-size: 0.75rem;
+        -webkit-line-clamp: 2;
     }
 
     .card-grid .card-summary {
@@ -2011,17 +2029,17 @@ body {
     }
 
     .card-grid .card-meta {
-        font-size: 0.5rem;
-        gap: 0.15rem;
+        font-size: 0.55rem;
+        gap: 0.2rem;
     }
 
     .card-grid .card-meta span {
-        padding: 0.1rem 0.2rem;
+        padding: 0.15rem 0.25rem;
     }
 
     .card-grid .card-price {
-        font-size: 0.5rem;
-        padding: 0.1rem 0.2rem;
+        font-size: 0.55rem;
+        padding: 0.15rem 0.25rem;
     }
 }
 
