@@ -1509,11 +1509,13 @@ function renderCardGrid(containerId, items) {
     const totalCards = allCards.length;
     const pageCount = Math.ceil(totalCards / cardsPerPage);
 
-    // On mobile, show all cards (horizontal scroll handles navigation)
+    // On mobile, show only first 4 cards (2x2 grid)
     // On desktop, use pagination
     if (isMobile) {
-        // Show all cards for mobile horizontal scroll
-        allCards.forEach(card => card.style.display = '');
+        // Show only first 4 cards for 2x2 grid
+        allCards.forEach((card, idx) => {
+            card.style.display = idx < 4 ? '' : 'none';
+        });
     } else {
         // Add pagination if needed on desktop
         if (pageCount > 1) {
