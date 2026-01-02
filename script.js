@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderAllCards();
     initDecks();
     initCarousels();
+    initCardExpansion();
 });
 
 /* ========================================
@@ -145,6 +146,70 @@ const activitiesData = {
     tokyo: {
         activities: [
             {
+                name: "Samurai Sword Cutting",
+                summary: "Tameshigiri—slice tatami mats with a real katana in a temple basement",
+                description: "Underneath a Shinjuku temple, you change into hakama, learn proper grip and stance from a swordmaster, then cut rolled tatami with a live blade. Tatami density mimics flesh and bone—this is how samurai tested their swords. The moment of contact is pure focus. Sessions are small (max 8), instruction is hands-on. Tradeoff: ¥13,000 is steep for an hour, but you're swinging a real katana. Book ahead—only runs Mon/Tue/Thu/Fri at 5pm.",
+                price: "¥13,000",
+                url: "https://www.samurai-theater.com/en/trial_cutting/",
+                images: [
+                    "https://images.unsplash.com/photo-1671015522549-e7aa41ded44f?w=800",
+                    "https://images.unsplash.com/photo-1580130732478-4e339fb6836f?w=800"
+                ],
+                category: "Experience",
+                location: "Shinjuku",
+                coords: { lat: 35.7028, lng: 139.7345 },
+                duration: "1 hour",
+                tips: "Arrive 5 min early. Age 15+. Wear easy-change clothes."
+            },
+            {
+                name: "Hanami (Cherry Blossom Viewing)",
+                summary: "1,000-year-old tradition—drink under pink canopies while petals fall in your beer",
+                description: "Japan's national obsession. Ueno Park has 1,000+ trees and full chaos energy—food stalls, blue tarps, salarymen drunk by 2pm. Meguro River is 800 trees along 4km of canal with lanterns at night (Nakameguro station, walk south). Chidorigafuchi has rowboats through a tunnel of blossoms along the Imperial Palace moat. 2026 forecast: Tokyo blooms ~March 19, peaks March 26-April 2. Your trip (April 8+) catches the tail end—petals falling like snow. Still beautiful, less crowds. Tradeoff: Peak week is elbow-to-elbow. If you hit it, go early morning or embrace the madness.",
+                price: "Free (parks) / ¥800 boat rental",
+                url: "https://www.japan-guide.com/e/e2011.html",
+                images: [
+                    "https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?w=800",
+                    "https://images.unsplash.com/photo-1614932750312-440cdfc45fea?w=800"
+                ],
+                category: "Seasonal",
+                location: "Ueno / Meguro / Chidorigafuchi",
+                coords: { lat: 35.7146, lng: 139.7732 },
+                duration: "2-4 hours",
+                tips: "Bring a tarp, snacks, drinks. Clean up after yourself."
+            },
+            {
+                name: "Tokyo Dome Baseball",
+                summary: "Yomiuri Giants—Japan's Yankees, 22-time champions, 55,000 fans chanting in unison",
+                description: "Japanese baseball is a different sport. Organized cheer sections, coordinated chants for every batter, trumpet squads, and choreographed umbrella celebrations. The Giants are the most storied franchise in NPB—love 'em or hate 'em. Food and beer vendors roam constantly. You'll leave knowing fight songs. Tradeoff: Tickets sell fast for good matchups. Weeknight games easier to snag.",
+                price: "¥3,000-8,000",
+                url: "https://www.tokyo-dome.co.jp/en/",
+                images: [
+                    "images/tokyo-dome1.jpg",
+                    "https://images.unsplash.com/photo-1516834474-6e704de7820e?w=800"
+                ],
+                category: "Sports",
+                location: "Bunkyo",
+                coords: { lat: 35.7056, lng: 139.7519 },
+                duration: "3-4 hours",
+                tips: "Buy from official site or convenience store kiosks"
+            },
+            {
+                name: "Sumo Morning Practice",
+                summary: "Watch 400lb wrestlers train at 6am—no tourists, just sweat and ritual",
+                description: "Some sumo stables allow visitors to watch morning keiko (practice). You sit silently on the floor while wrestlers slam into each other repeatedly for 2-3 hours. The thud of bodies hitting clay is visceral. This isn't performance—it's actual training. Deeply intimate. Tradeoff: Very limited capacity. Must book through a guide service. Strict etiquette—no photos, no talking, no moving. Starts around 7-8am.",
+                price: "¥10,000-15,000 (via guide)",
+                url: "https://www.sumo.or.jp/En/",
+                images: [
+                    "https://images.unsplash.com/photo-1574908445051-d9e0c2f4f763?w=800",
+                    "https://images.unsplash.com/photo-1540324155974-7523202daa3f?w=800"
+                ],
+                category: "Experience",
+                location: "Ryogoku",
+                coords: { lat: 35.6969, lng: 139.7932 },
+                duration: "2-3 hours",
+                tips: "Book via guide service like Klook or Voyagin"
+            },
+            {
                 name: "Meiji Jingu + Yoyogi Park",
                 summary: "Built 1920 to honor Emperor Meiji—100,000 trees donated from across Japan",
                 description: "You walk through a 12-meter cypress torii and suddenly 13 million people vanish. The 100,000 trees here were planted in 1920 by volunteers from across Japan. On weekends, Yoyogi Park's plaza fills with 1950s rockabilly dancers doing their thing to boomboxes—zero irony, full pompadours. Tradeoff: The shrine itself takes 20 minutes to reach from the entrance. Don't rush it.",
@@ -201,6 +266,7 @@ const activitiesData = {
                 price: "¥1,000",
                 url: "https://www.tnm.jp/?lang=en",
                 images: [
+                    "images/tokyo-national-museum.jpg",
                     "https://images.unsplash.com/photo-1677774398078-dfebffbfcd54?w=800",
                     "https://images.unsplash.com/photo-1541689507962-7658adb8aa70?w=800",
                     "https://images.unsplash.com/photo-1677774396192-66dc8824719e?w=800"
@@ -427,6 +493,38 @@ const activitiesData = {
                 coords: { lat: 35.6896, lng: 139.6917 },
                 duration: "30-60 min",
                 tips: "North tower for bar, South for Fuji"
+            },
+            {
+                name: "Street Go-Kart Tour",
+                summary: "Drive actual go-karts through Shibuya traffic—legally, in costume, at night",
+                description: "You put on a Mario costume (or whatever) and drive a go-kart through real Tokyo streets. Shibuya Crossing at night in a kart is surreal. You're in traffic with taxis and buses—it's not a track, it's the actual city. Guides lead the convoy. Tradeoff: Need an International Driving Permit. If you don't have one, you don't drive. Book at least a week out.",
+                price: "¥10,000-15,000",
+                url: "https://www.maricar.com/en/",
+                images: [
+                    "https://images.unsplash.com/photo-1575356294609-f7d56fb0013c?w=800",
+                    "https://images.unsplash.com/photo-1560719078-e294c193a677?w=800"
+                ],
+                category: "Experience",
+                location: "Shibuya/Akihabara",
+                coords: { lat: 35.6595, lng: 139.7004 },
+                duration: "1-2 hours",
+                tips: "International Driving Permit required—no exceptions"
+            },
+            {
+                name: "Suntory Musashino Brewery",
+                summary: "Free beer tour 30min from Shinjuku—Premium Malt's birthplace since 1963",
+                description: "Suntory's Tokyo-area brewery runs free 70-minute tours through the brewing process. You see the mash tuns, fermentation tanks, packaging lines—the whole operation. Ends with three pours of Premium Malt's in the tasting room. Staff explains proper pouring technique. Tradeoff: Tours in Japanese only (English audio guide available). Books out weeks in advance—reserve the second it opens.",
+                price: "Free",
+                url: "https://www.suntory.co.jp/factory/musashino/",
+                images: [
+                    "https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=800",
+                    "https://images.unsplash.com/photo-1535958636474-b021ee887b13?w=800"
+                ],
+                category: "Experience",
+                location: "Fuchu (30min from Shinjuku)",
+                coords: { lat: 35.6647, lng: 139.4772 },
+                duration: "2 hours (including travel)",
+                tips: "Reserve online immediately when slots open"
             }
         ],
         nightlife: [
@@ -519,9 +617,7 @@ const activitiesData = {
                 price: "¥2,000-4,000",
                 url: "https://www.google.com/maps/place/Ebisu+Yokocho",
                 images: [
-                    "https://images.unsplash.com/photo-1585225010499-e5d61026b932?w=800",
-                    "https://images.unsplash.com/photo-1729559149720-2b6c5c200428?w=800",
-                    "https://images.unsplash.com/photo-1585225659982-ecbb8b6b8f6a?w=800"
+                    "images/ebisu-yokocho-4.jpg"
                 ],
                 category: "Food & Drink",
                 location: "Ebisu",
@@ -640,6 +736,54 @@ const activitiesData = {
                 location: "Jingu (Swallows) or Tokyo Dome (Giants)",
                 duration: "3-4 hours",
                 tips: "Jingu is more fun, Tokyo Dome is bigger"
+            },
+            {
+                name: "Ginza Lion Beer Hall",
+                summary: "Japan's oldest beer hall since 1934—Sapporo on tap under a 250-color mosaic",
+                description: "The original beer hall opened in 1934 and is now heritage-listed. The Shinjuku branch has the same DNA: Sapporo Black Label poured by uniformed staff, hearty yoshoku (Japanese Western) food, and massive tables for groups. Private rooms fit up to 100 people. The all-you-can-drink courses are solid value. Tradeoff: It's a chain experience, but a well-executed one with actual history behind it.",
+                price: "¥930/pint, ¥5,300+ courses",
+                url: "https://www.ginzalion.jp/shop/brand/lion/shop136.html",
+                images: [
+                    "https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=800",
+                    "https://images.unsplash.com/photo-1567696911980-2eed69a46042?w=800"
+                ],
+                category: "Beer Hall",
+                location: "Shinjuku (2 min from west exit)",
+                coords: { lat: 35.6897, lng: 139.6980 },
+                duration: "1-2 hours",
+                tips: "Book private room for groups of 6+"
+            },
+            {
+                name: "YONA YONA BEER WORKS",
+                summary: "Japan's craft beer poster child—Yona Yona Ale straight from the source",
+                description: "Yo-Ho Brewing's official taproom. Yona Yona Ale, Indo no Aooni IPA, Tokyo Black porter—all fresh. The basement space in Shinjuku is open and relaxed, rare for the area. Food is designed to pair: sausages, fried chicken, pizza. Gets packed on weekends but weeknight vibes are solid. Tradeoff: It's popular, so expect waits on Friday/Saturday after 8pm.",
+                price: "¥700-900/beer",
+                url: "https://yonayonabeerworks.com/en/pages/shop-shinjuku",
+                images: [
+                    "https://images.unsplash.com/photo-1574521091464-a55e7763c1e5?w=800",
+                    "https://images.unsplash.com/photo-1516458464372-eea4ab222b31?w=800"
+                ],
+                category: "Craft Beer",
+                location: "Shinjuku Higashiguchi (east exit)",
+                coords: { lat: 35.6930, lng: 139.7055 },
+                duration: "1-2 hours",
+                tips: "Open from noon, weeknights less crowded"
+            },
+            {
+                name: "Shinjuku Ale",
+                summary: "4-floor beer building with rooftop BBQ—brews its own beer on the 3rd floor",
+                description: "An entire building in Kabukicho dedicated to beer. 1F is a standing bar (noon-4am). 2F is a counter bar. 3F is the actual brewery making their pilsner, IPA, mikan ale, and a CBD-infused beer. Rooftop is BBQ with beer can chicken and all-you-can-drink for ¥5,000. Good for pre-game or when you miss the last train. Tradeoff: It's Kabukicho, so the vibe outside is chaotic. Inside is chill.",
+                price: "¥700-900/beer, ¥5,000 BBQ course",
+                url: "https://savorjapan.com/0020001326/",
+                images: [
+                    "https://images.unsplash.com/photo-1571613316887-6f8d5cbf7ef7?w=800",
+                    "https://images.unsplash.com/photo-1545334780-79bcfc9f27f0?w=800"
+                ],
+                category: "Brewery",
+                location: "Kabukicho",
+                coords: { lat: 35.6964, lng: 139.7018 },
+                duration: "1-3 hours",
+                tips: "Rooftop BBQ needs reservation. Open until 4am."
             }
         ],
         food: [
@@ -1296,7 +1440,6 @@ function createScrollCard(item, cardIndex) {
 
                 <div class="card-meta">
                     ${item.location ? `<span><span class="icon">📍</span> ${item.location}</span>` : ''}
-                    ${item.duration ? `<span><span class="icon">⏱</span> ${item.duration}</span>` : ''}
                     ${item.tips ? `<span><span class="icon">💡</span> ${item.tips}</span>` : ''}
                 </div>
 
@@ -1306,155 +1449,166 @@ function createScrollCard(item, cardIndex) {
     `;
 }
 
+/**
+ * Calculate grid dimensions based on actual CSS Grid layout
+ * Uses DOM measurement after render to get accurate values
+ */
+function getGridDimensions(container) {
+    // Get CSS variables from root
+    const styles = getComputedStyle(document.documentElement);
+    const gapPx = parseFloat(styles.getPropertyValue('--grid-gap')) * 16 || 12; // Convert rem to px
+
+    // Get column count from CSS Grid
+    const gridStyles = getComputedStyle(container);
+    const columns = gridStyles.gridTemplateColumns.split(' ').length;
+
+    return { columns, gap: gapPx };
+}
+
+/**
+ * Calculate how many rows of cards fit in the available space
+ * Measures actual container height after render
+ */
+function calculateVisibleRows(container) {
+    // Get the parent city-page
+    const cityPage = container.closest('.city-page');
+    if (!cityPage) return 3; // Fallback
+
+    // Get computed dimensions
+    const styles = getComputedStyle(document.documentElement);
+    const navHeight = parseFloat(styles.getPropertyValue('--nav-height')) || 80;
+    const paddingTop = parseFloat(styles.getPropertyValue('--page-padding-top')) * 16 || 16;
+    const paddingBottom = parseFloat(styles.getPropertyValue('--page-padding-bottom')) * 16 || 16;
+    const headerHeight = parseFloat(styles.getPropertyValue('--header-height')) * 16 || 40;
+    const paginationHeight = parseFloat(styles.getPropertyValue('--pagination-height')) * 16 || 40;
+    const gridGap = parseFloat(styles.getPropertyValue('--grid-gap')) * 16 || 12;
+
+    // Calculate available height for the grid
+    const viewportHeight = window.innerHeight;
+    const availableHeight = viewportHeight - navHeight - paddingTop - paddingBottom - headerHeight - paginationHeight - gridGap * 2;
+
+    // Estimate row height (55% image + 45% text, approximate)
+    // This is a reasonable estimate; CSS will handle the actual sizing
+    const estimatedRowHeight = availableHeight / 3; // Start with 3 rows as baseline
+    const rows = Math.max(1, Math.floor(availableHeight / (estimatedRowHeight + gridGap)));
+
+    return Math.min(rows, 4); // Cap at 4 rows max
+}
+
 function renderCardGrid(containerId, items) {
     const container = document.getElementById(containerId);
     if (!container || !items || items.length === 0) return;
 
-    // Calculate cards per row based on viewport
-    const getCardsPerRow = () => {
+    // Get column count from CSS
+    const getColumns = () => {
         if (window.innerWidth >= 1024) return 4;
         if (window.innerWidth >= 768) return 3;
         return 2;
     };
 
-    // Calculate how many rows fit in available height
-    const getRowCount = () => {
-        const viewportHeight = window.innerHeight;
-        // Get actual nav height from CSS variable
-        const navHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-height')) || 70;
-        const headerHeight = 40; // Page header (minimal)
-        const pageNavHeight = 32; // Grid pagination controls
-        const padding = 12; // Page padding (top + bottom)
-        const rowGap = 8; // Gap between rows
-        const cardHeight = window.innerWidth >= 768 ? 155 : 125; // Card + text height
+    // Calculate rows that fit
+    const getRows = () => {
+        // More accurate height calculation based on viewport and CSS variables
+        const vh = window.innerHeight;
+        const navHeight = window.innerWidth >= 768 ? 80 : 70;
+        const headerHeight = window.innerWidth >= 768 ? 40 : 32;
+        const paginationHeight = window.innerWidth >= 768 ? 40 : 32;
+        const padding = window.innerWidth >= 768 ? 32 : 24; // top + bottom
+        const gap = window.innerWidth >= 768 ? 12 : 8;
 
-        const availableHeight = viewportHeight - navHeight - headerHeight - pageNavHeight - padding;
-        return Math.max(1, Math.floor(availableHeight / (cardHeight + rowGap)));
+        // Available height for cards
+        const available = vh - navHeight - headerHeight - paginationHeight - padding - gap;
+
+        // Each row needs: card height (handled by CSS flex)
+        // Estimate: on desktop ~200px per row, mobile ~150px
+        const rowHeight = window.innerWidth >= 768 ? 200 : 150;
+
+        return Math.max(1, Math.floor(available / (rowHeight + gap)));
     };
 
-    const cardsPerRow = getCardsPerRow();
-    const rowCount = getRowCount();
-    const cardsPerPage = cardsPerRow * rowCount;
+    const columns = getColumns();
+    const rows = getRows();
+    const cardsPerPage = columns * rows;
 
-    // Split items into rows
-    const rows = [];
-    for (let i = 0; i < items.length; i += cardsPerRow) {
-        rows.push(items.slice(i, i + cardsPerRow));
-    }
+    // Render all cards directly (no row wrappers)
+    const cardsHtml = items.map((item, idx) => createScrollCard(item, idx)).join('');
+    container.innerHTML = cardsHtml;
 
-    // Only render visible rows, but track all rows for carousel
-    const visibleRows = rows.slice(0, rowCount);
-    const hasOverflow = rows.length > rowCount;
+    // Set CSS custom property for row count
+    container.style.setProperty('--grid-rows', rows);
 
-    // Generate row HTML with carousel controls
-    const rowsHtml = rows.map((rowItems, rowIndex) => {
-        const cardsHtml = rowItems.map((item, idx) => createScrollCard(item, rowIndex * cardsPerRow + idx)).join('');
-        const hasMoreCards = rowItems.length > cardsPerRow;
+    // Get all cards
+    const allCards = container.querySelectorAll('.scroll-card');
+    const totalCards = allCards.length;
+    const pageCount = Math.ceil(totalCards / cardsPerPage);
 
-        return `
-            <div class="card-row-wrapper" data-row="${rowIndex}" style="${rowIndex >= rowCount ? 'display:none;' : ''}">
-                <div class="row-viewport">
-                    <div class="card-row" data-offset="0">
-                        ${cardsHtml}
-                    </div>
-                </div>
-            </div>
-        `;
-    }).join('');
-
-    container.innerHTML = rowsHtml;
-
-    // Add row page indicator if overflow
-    if (hasOverflow) {
-        const pageCount = Math.ceil(rows.length / rowCount);
-        container.insertAdjacentHTML('beforeend', `
+    // Add pagination if needed
+    if (pageCount > 1) {
+        // Create pagination container outside the grid
+        const paginationHtml = `
             <div class="grid-page-nav">
                 <button class="grid-page-prev" disabled>‹</button>
                 <span class="grid-page-indicator">1 / ${pageCount}</span>
                 <button class="grid-page-next">›</button>
             </div>
-        `);
-        initGridPagination(container, rows, rowCount, cardsPerRow);
+        `;
+        container.insertAdjacentHTML('afterend', paginationHtml);
+
+        // Move pagination to correct location (after grid, inside city-page)
+        const pagination = container.nextElementSibling;
+        if (pagination && pagination.classList.contains('grid-page-nav')) {
+            initGridPagination(container, allCards, cardsPerPage, pagination, pageCount);
+        }
     }
 
-    // Initialize row carousels for overflow within rows
-    initRowCarousels(container, cardsPerRow);
+    // Initially show only first page
+    showPage(allCards, 0, cardsPerPage);
 }
 
-function initGridPagination(container, rows, rowCount, cardsPerRow) {
+function showPage(cards, pageIndex, cardsPerPage) {
+    const startIdx = pageIndex * cardsPerPage;
+    const endIdx = startIdx + cardsPerPage;
+
+    cards.forEach((card, idx) => {
+        if (idx >= startIdx && idx < endIdx) {
+            card.style.display = '';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
+
+function initGridPagination(container, cards, cardsPerPage, paginationEl, pageCount) {
     let currentPage = 0;
-    const pageCount = Math.ceil(rows.length / rowCount);
-    const prevBtn = container.querySelector('.grid-page-prev');
-    const nextBtn = container.querySelector('.grid-page-next');
-    const indicator = container.querySelector('.grid-page-indicator');
+    const prevBtn = paginationEl.querySelector('.grid-page-prev');
+    const nextBtn = paginationEl.querySelector('.grid-page-next');
+    const indicator = paginationEl.querySelector('.grid-page-indicator');
 
     const updatePage = () => {
-        const rowWrappers = container.querySelectorAll('.card-row-wrapper');
-        rowWrappers.forEach((wrapper, idx) => {
-            const startIdx = currentPage * rowCount;
-            const endIdx = startIdx + rowCount;
-            wrapper.style.display = (idx >= startIdx && idx < endIdx) ? '' : 'none';
-        });
+        showPage(cards, currentPage, cardsPerPage);
 
         if (indicator) indicator.textContent = `${currentPage + 1} / ${pageCount}`;
         if (prevBtn) prevBtn.disabled = currentPage === 0;
         if (nextBtn) nextBtn.disabled = currentPage >= pageCount - 1;
     };
 
-    if (prevBtn) prevBtn.addEventListener('click', () => {
-        if (currentPage > 0) { currentPage--; updatePage(); }
-    });
-    if (nextBtn) nextBtn.addEventListener('click', () => {
-        if (currentPage < pageCount - 1) { currentPage++; updatePage(); }
-    });
-}
-
-function initRowCarousels(container, cardsPerRow) {
-    // Each row can be swiped horizontally if it has more than visible cards
-    const rowWrappers = container.querySelectorAll('.card-row-wrapper');
-
-    rowWrappers.forEach(wrapper => {
-        const row = wrapper.querySelector('.card-row');
-        const cards = row.querySelectorAll('.scroll-card');
-
-        if (cards.length <= cardsPerRow) return; // No need for carousel
-
-        let offset = 0;
-        const maxOffset = cards.length - cardsPerRow;
-
-        // Touch/swipe handling
-        let startX = 0;
-        let isDragging = false;
-
-        row.addEventListener('touchstart', (e) => {
-            startX = e.touches[0].clientX;
-            isDragging = true;
-        }, { passive: true });
-
-        row.addEventListener('touchmove', (e) => {
-            if (!isDragging) return;
-            const diffX = startX - e.touches[0].clientX;
-            if (Math.abs(diffX) > 50) {
-                if (diffX > 0 && offset < maxOffset) {
-                    offset++;
-                } else if (diffX < 0 && offset > 0) {
-                    offset--;
-                }
-                updateRowPosition(row, offset, cardsPerRow);
-                isDragging = false;
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            if (currentPage > 0) {
+                currentPage--;
+                updatePage();
             }
-        }, { passive: true });
+        });
+    }
 
-        row.addEventListener('touchend', () => { isDragging = false; });
-    });
-}
-
-function updateRowPosition(row, offset, cardsPerRow) {
-    const cardWidth = row.querySelector('.scroll-card')?.offsetWidth || 0;
-    const gap = 12; // 0.75rem
-    const translateX = offset * (cardWidth + gap);
-    row.style.transform = `translateX(-${translateX}px)`;
-    row.dataset.offset = offset;
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            if (currentPage < pageCount - 1) {
+                currentPage++;
+                updatePage();
+            }
+        });
+    }
 }
 
 function renderAllCards() {
@@ -1763,8 +1917,16 @@ function initCarousels() {
         }
 
         // Handle tap on carousel slides (left half = prev, right half = next)
+        // Only works when card is already expanded - otherwise expansion handler takes over
         if (e.target.classList.contains('carousel-slide')) {
             const slide = e.target;
+            const card = slide.closest('.scroll-card');
+
+            // Only navigate carousel if the card is expanded
+            if (!card || !card.classList.contains('expanded')) {
+                return;
+            }
+
             const carousel = slide.closest('.card-carousel');
             const track = carousel.querySelector('.carousel-track');
             const slides = track.querySelectorAll('.carousel-slide');
@@ -1815,6 +1977,120 @@ function updateCarousel(track, dots, counter, current, total) {
     // Update counter
     if (counter) {
         counter.textContent = `${current + 1} / ${total}`;
+    }
+}
+
+/* ========================================
+   CARD EXPANSION FEATURE
+   ======================================== */
+
+function initCardExpansion() {
+    // Track currently expanded card
+    let expandedCard = null;
+
+    // Handle card clicks for expansion
+    document.addEventListener('click', (e) => {
+        const card = e.target.closest('.scroll-card');
+
+        // If clicking exit button, collapse the card
+        if (e.target.classList.contains('card-exit-btn')) {
+            e.preventDefault();
+            e.stopPropagation();
+            collapseCard();
+            return;
+        }
+
+        // Don't expand if clicking on interactive elements
+        if (e.target.closest('a, button, .carousel-btn, .carousel-dot, .description-toggle')) {
+            return;
+        }
+
+        // If clicking on a card and it's not already expanded
+        if (card && !card.classList.contains('expanded')) {
+            e.preventDefault();
+            expandCard(card);
+        }
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && expandedCard) {
+            collapseCard();
+        }
+    });
+
+    function expandCard(card) {
+        // Collapse any existing expanded card first
+        if (expandedCard) {
+            collapseCard();
+        }
+
+        const grid = card.closest('.card-grid');
+        if (!grid) return;
+
+        // Add expanded state
+        expandedCard = card;
+        grid.classList.add('has-expanded-card');
+        card.classList.add('expanded');
+
+        // Add exit button if not already present
+        if (!card.querySelector('.card-exit-btn')) {
+            const exitBtn = document.createElement('button');
+            exitBtn.className = 'card-exit-btn';
+            exitBtn.innerHTML = '×';
+            exitBtn.setAttribute('aria-label', 'Close expanded view');
+            card.appendChild(exitBtn);
+        }
+
+        // Auto-expand description
+        const toggle = card.querySelector('.description-toggle');
+        const wrapper = card.querySelector('.description-wrapper');
+        if (toggle && wrapper) {
+            toggle.classList.add('expanded');
+            wrapper.classList.add('expanded');
+            toggle.setAttribute('aria-expanded', 'true');
+        }
+
+        // Prevent body scroll
+        document.body.style.overflow = 'hidden';
+    }
+
+    function collapseCard() {
+        if (!expandedCard) return;
+
+        const card = expandedCard;
+        const grid = card.closest('.card-grid');
+
+        // Remove expanded class from card first
+        card.classList.remove('expanded');
+
+        // Remove exit button
+        const exitBtn = card.querySelector('.card-exit-btn');
+        if (exitBtn) {
+            exitBtn.remove();
+        }
+
+        // Collapse description
+        const toggle = card.querySelector('.description-toggle');
+        const wrapper = card.querySelector('.description-wrapper');
+        if (toggle && wrapper) {
+            toggle.classList.remove('expanded');
+            wrapper.classList.remove('expanded');
+            toggle.setAttribute('aria-expanded', 'false');
+        }
+
+        // Clear the reference before DOM changes
+        expandedCard = null;
+
+        // Remove grid expanded state and force layout recalculation
+        if (grid) {
+            grid.classList.remove('has-expanded-card');
+            // Force reflow to ensure grid layout is recalculated
+            void grid.offsetHeight;
+        }
+
+        // Restore body scroll
+        document.body.style.overflow = '';
     }
 }
 
