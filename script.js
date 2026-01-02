@@ -101,6 +101,9 @@ function initTabs() {
             if (firstPage) {
                 firstPage.scrollIntoView({ behavior: 'smooth' });
             }
+
+            // Reinit airbnb carousels for newly visible city (fixes zero-width issue)
+            setTimeout(() => initAirbnbCarousels(), 100);
         });
     });
 }
@@ -808,6 +811,7 @@ const activitiesData = {
                 price: "¥1,500-2,000",
                 url: "https://www.google.com/maps/search/Gyukatsu+Motomura+Tokyo",
                 images: [
+                    "images/gyakatsu.jpg",
                     "https://images.unsplash.com/photo-1720792445167-c622bb1d8378?w=800"
                 ],
                 category: "Beef",
@@ -816,12 +820,43 @@ const activitiesData = {
                 tips: "Try all three sauces, sear each bite differently"
             },
             {
+                name: "WAGYU TOK",
+                summary: "Certified Kobe beef in the new Tokyu Kabukicho Tower—polished and accessible",
+                description: "Dedicated Kobe beef restaurant in the flashy new Kabukicho Tower. The certification matters: real Kobe beef comes with a 10-digit ID. Menu spans sirloin steak, roast beef bowls, and yakiniku cuts. English menu available. Tradeoff: Premium pricing for the certification, but you know exactly what you're getting.",
+                price: "¥8,000-15,000",
+                url: "https://www.google.com/maps/search/WAGYU+TOK+Kabukicho+Tower",
+                images: [
+                    "https://images.unsplash.com/photo-1504973960431-1c467e159aa4?w=800",
+                    "https://images.unsplash.com/photo-1558030006-450675393462?w=800"
+                ],
+                category: "Beef",
+                location: "Kabukicho, Shinjuku",
+                duration: "1-1.5 hours",
+                tips: "Ask to see the beef certificate, try the sirloin steak"
+            },
+            {
+                name: "Emperor Steak Shinjuku",
+                summary: "Teppanyaki theater—watch your Kobe beef cooked on the iron griddle",
+                description: "High-end teppanyaki where the chef's performance is part of the meal. Kobe and premium wagyu cooked tableside on the hot iron plate. The sizzle, the flame, the precise knife work—this is Japanese steakhouse as showmanship. Tradeoff: Splurge pricing. The experience justifies it if you want the full teppanyaki production.",
+                price: "¥12,000-25,000",
+                url: "https://www.google.com/maps/search/Emperor+Steak+Shinjuku+Kabukicho",
+                images: [
+                    "https://images.unsplash.com/photo-1548940740-204726a19be3?w=800",
+                    "https://images.unsplash.com/photo-1546964124-0cce460f38ef?w=800"
+                ],
+                category: "Beef",
+                location: "Kabukicho, Shinjuku",
+                duration: "1.5-2 hours",
+                tips: "Sit at the counter for the best view of the chef"
+            },
+            {
                 name: "Convenience Store Food",
                 summary: "Bourdain ate 7-Eleven onigiri on camera—it's genuinely that good",
                 description: "7-Eleven's salmon onigiri. Lawson's karaage-kun. FamilyMart's famichiki. The egg sandwiches (tamago sando) are fluffy miracles. This is not gas station food—it's genuinely good and available 24/7 for under ¥500. Tradeoff: None. This is unironically one of the best food experiences in Japan. Accept it.",
                 price: "¥100-500",
                 url: "https://www.google.com/maps/search/7-Eleven+Tokyo",
                 images: [
+                    "images/7-11.JPG",
                     "https://images.unsplash.com/photo-1737382671141-a47408535a92?w=800",
                     "https://images.unsplash.com/photo-1586680004110-0a5f785bd9d8?w=800",
                     "https://images.unsplash.com/photo-1708600140738-cc754b351c9c?w=800"
@@ -1367,6 +1402,70 @@ const activitiesData = {
 };
 
 /* ========================================
+   CATEGORY MAPPING - Split activities into sections
+   ======================================== */
+
+const experienceCategories = ['Experience', 'Sports', 'Entertainment', 'Theme Park'];
+const culturalCategories = ['Shrine', 'Temple', 'Museum', 'Art', 'Views', 'Castle', 'Seasonal', 'Nature'];
+const areaCategories = ['District', 'Neighborhood', 'Market', 'Shopping'];
+
+// Filter activities into sub-sections
+function splitActivities(activities) {
+    return {
+        experiences: activities.filter(item => experienceCategories.includes(item.category)),
+        cultural: activities.filter(item => culturalCategories.includes(item.category)),
+        areas: activities.filter(item => areaCategories.includes(item.category))
+    };
+}
+
+/* ========================================
+   TEXT LIST ITEM FACTORY
+   ======================================== */
+
+function createListItem(item, itemIndex) {
+    const isFree = item.price && (item.price.toLowerCase() === 'free' || item.price.includes('Free'));
+
+    // Format location
+    const locationHtml = item.location ? `<span class="list-item-location">${item.location}</span>` : '';
+
+    // Format price - show USD conversion for yen prices
+    let priceHtml = '';
+    if (item.price) {
+        const usd = convertYenToUSD(item.price);
+        if (usd) {
+            priceHtml = `<span class="list-item-price">${usd}</span>`;
+        } else {
+            priceHtml = `<span class="list-item-price ${isFree ? 'free' : ''}">${item.price}</span>`;
+        }
+    }
+
+    return `
+        <div class="list-item" data-item-index="${itemIndex}">
+            <div class="list-item-main">
+                <a href="#" class="list-item-name">${item.name}</a>
+                <p class="list-item-summary">${item.summary || ''}</p>
+            </div>
+            <div class="list-item-meta">
+                ${locationHtml}
+                ${priceHtml}
+            </div>
+        </div>
+    `;
+}
+
+function renderTextList(containerId, items) {
+    const container = document.getElementById(containerId);
+    if (!container || !items || items.length === 0) return;
+
+    // Store items data on container for expansion lookup
+    container._itemsData = items;
+
+    // Render all items as a scrollable list
+    const listHtml = items.map((item, idx) => createListItem(item, idx)).join('');
+    container.innerHTML = `<div class="text-list">${listHtml}</div>`;
+}
+
+/* ========================================
    CARD FACTORY WITH IMAGE CAROUSEL
    ======================================== */
 
@@ -1627,21 +1726,30 @@ function initGridPagination(container, cards, cardsPerPage, paginationEl, pageCo
 }
 
 function renderAllCards() {
-    // Tokyo sections
-    renderCardGrid('tokyo-activities-grid', activitiesData.tokyo.activities);
-    renderCardGrid('tokyo-nightlife-grid', activitiesData.tokyo.nightlife);
-    renderCardGrid('tokyo-food-grid', activitiesData.tokyo.food);
-    renderCardGrid('tokyo-daytrips-grid', activitiesData.tokyo.daytrips);
+    // Tokyo - split activities into 3 sections
+    const tokyoSplit = splitActivities(activitiesData.tokyo.activities);
+    renderTextList('tokyo-experiences-grid', tokyoSplit.experiences);
+    renderTextList('tokyo-cultural-grid', tokyoSplit.cultural);
+    renderTextList('tokyo-areas-grid', tokyoSplit.areas);
+    renderTextList('tokyo-nightlife-grid', activitiesData.tokyo.nightlife);
+    renderTextList('tokyo-food-grid', activitiesData.tokyo.food);
+    renderTextList('tokyo-daytrips-grid', activitiesData.tokyo.daytrips);
 
-    // Kyoto sections
-    renderCardGrid('kyoto-activities-grid', activitiesData.kyoto.activities);
-    renderCardGrid('kyoto-food-grid', activitiesData.kyoto.food);
-    renderCardGrid('kyoto-nightlife-grid', activitiesData.kyoto.nightlife);
+    // Kyoto - split activities into 3 sections
+    const kyotoSplit = splitActivities(activitiesData.kyoto.activities);
+    renderTextList('kyoto-experiences-grid', kyotoSplit.experiences);
+    renderTextList('kyoto-cultural-grid', kyotoSplit.cultural);
+    renderTextList('kyoto-areas-grid', kyotoSplit.areas);
+    renderTextList('kyoto-food-grid', activitiesData.kyoto.food);
+    renderTextList('kyoto-nightlife-grid', activitiesData.kyoto.nightlife);
 
-    // Osaka sections
-    renderCardGrid('osaka-activities-grid', activitiesData.osaka.activities);
-    renderCardGrid('osaka-food-grid', activitiesData.osaka.food);
-    renderCardGrid('osaka-nightlife-grid', activitiesData.osaka.nightlife);
+    // Osaka - split activities into 3 sections
+    const osakaSplit = splitActivities(activitiesData.osaka.activities);
+    renderTextList('osaka-experiences-grid', osakaSplit.experiences);
+    renderTextList('osaka-cultural-grid', osakaSplit.cultural);
+    renderTextList('osaka-areas-grid', osakaSplit.areas);
+    renderTextList('osaka-food-grid', activitiesData.osaka.food);
+    renderTextList('osaka-nightlife-grid', activitiesData.osaka.nightlife);
 }
 
 /* ========================================
@@ -2050,135 +2158,196 @@ function updateCarousel(track, dots, counter, current, total) {
 }
 
 /* ========================================
-   CARD EXPANSION FEATURE
+   LIST ITEM EXPANSION TO DETAIL CARD
    ======================================== */
 
 function initCardExpansion() {
-    // Track currently expanded card
-    let expandedCard = null;
+    // Track currently expanded overlay
+    let expandedOverlay = null;
 
-    // Handle card clicks for expansion
+    // Create overlay container once
+    const overlayContainer = document.createElement('div');
+    overlayContainer.className = 'detail-overlay';
+    overlayContainer.innerHTML = `
+        <div class="detail-overlay-backdrop"></div>
+        <div class="detail-card">
+            <button class="detail-close-btn" aria-label="Close">&times;</button>
+            <div class="detail-card-content"></div>
+        </div>
+    `;
+    document.body.appendChild(overlayContainer);
+
+    const backdrop = overlayContainer.querySelector('.detail-overlay-backdrop');
+    const detailCard = overlayContainer.querySelector('.detail-card');
+    const closeBtn = overlayContainer.querySelector('.detail-close-btn');
+    const contentContainer = overlayContainer.querySelector('.detail-card-content');
+
+    // Handle list item name clicks
     document.addEventListener('click', (e) => {
-        const card = e.target.closest('.scroll-card');
-
-        // If clicking exit button, collapse the card
-        if (e.target.classList.contains('card-exit-btn')) {
+        const listItemName = e.target.closest('.list-item-name');
+        if (listItemName) {
             e.preventDefault();
-            e.stopPropagation();
-            collapseCard();
-            return;
-        }
-
-        // Don't expand if clicking on interactive elements
-        if (e.target.closest('a, button, .carousel-btn, .carousel-dot, .description-toggle')) {
-            return;
-        }
-
-        // If clicking on a card and it's not already expanded
-        if (card && !card.classList.contains('expanded')) {
-            e.preventDefault();
-            expandCard(card);
+            const listItem = listItemName.closest('.list-item');
+            const container = listItem.closest('.card-grid');
+            if (container && container._itemsData) {
+                const itemIndex = parseInt(listItem.dataset.itemIndex);
+                const item = container._itemsData[itemIndex];
+                if (item) {
+                    showDetailCard(item);
+                }
+            }
         }
     });
+
+    // Close on backdrop click
+    backdrop.addEventListener('click', closeDetailCard);
+
+    // Close on close button
+    closeBtn.addEventListener('click', closeDetailCard);
 
     // Close on Escape key
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && expandedCard) {
-            collapseCard();
+        if (e.key === 'Escape' && expandedOverlay) {
+            closeDetailCard();
         }
     });
 
-    function expandCard(card) {
-        // Collapse any existing expanded card first
-        if (expandedCard) {
-            collapseCard();
-        }
+    function showDetailCard(item) {
+        const isFree = item.price && (item.price.toLowerCase() === 'free' || item.price.includes('Free'));
+        const images = item.images || [];
+        const hasMultipleImages = images.length > 1;
 
-        const grid = card.closest('.card-grid');
-        if (!grid) return;
+        // Generate carousel slides
+        const slidesHtml = images.length > 0
+            ? images.map((img, i) => `
+                <div class="carousel-slide" style="background-image: url('${img}')" data-index="${i}"></div>
+            `).join('')
+            : '<div class="carousel-slide no-image"></div>';
 
-        // Add expanded state
-        expandedCard = card;
-        grid.classList.add('has-expanded-card');
-        card.classList.add('expanded');
+        // Generate carousel dots
+        const dotsHtml = hasMultipleImages
+            ? `<div class="carousel-dots">
+                ${images.map((_, i) => `<button class="carousel-dot ${i === 0 ? 'active' : ''}" data-index="${i}"></button>`).join('')}
+               </div>`
+            : '';
 
-        // On mobile, also mark the page wrapper
-        const pageWrapper = card.closest('.grid-page');
-        if (pageWrapper) {
-            pageWrapper.classList.add('has-expanded-card');
-            // Hide sibling cards in this page
-            pageWrapper.querySelectorAll('.scroll-card').forEach(c => {
-                if (c !== card) c.style.display = 'none';
-            });
-        }
+        // Build the detail card content
+        contentContainer.innerHTML = `
+            <div class="detail-carousel">
+                ${hasMultipleImages ? `<span class="carousel-counter">1 / ${images.length}</span>` : ''}
+                <div class="carousel-track" data-current="0">
+                    ${slidesHtml}
+                </div>
+                ${hasMultipleImages ? `
+                    <button class="carousel-btn prev" aria-label="Previous image">‹</button>
+                    <button class="carousel-btn next" aria-label="Next image">›</button>
+                ` : ''}
+                ${dotsHtml}
+            </div>
+            <div class="detail-info">
+                <div class="detail-header">
+                    <h2 class="detail-title">${item.name}</h2>
+                    ${item.price ? `<span class="detail-price ${isFree ? 'free' : ''}">${formatPriceWithUSD(item.price)}</span>` : ''}
+                </div>
+                <p class="detail-summary">${item.summary || ''}</p>
+                <div class="detail-description">${item.description || ''}</div>
+                <div class="detail-meta">
+                    ${item.location ? `<span class="detail-meta-item"><span class="icon">📍</span> ${item.location}</span>` : ''}
+                    ${item.duration ? `<span class="detail-meta-item"><span class="icon">⏱</span> ${item.duration}</span>` : ''}
+                    ${item.tips ? `<span class="detail-meta-item"><span class="icon">💡</span> ${item.tips}</span>` : ''}
+                </div>
+                ${item.url ? `<a href="${item.url}" target="_blank" class="detail-link">Learn more →</a>` : ''}
+            </div>
+        `;
 
-        // Add exit button if not already present
-        if (!card.querySelector('.card-exit-btn')) {
-            const exitBtn = document.createElement('button');
-            exitBtn.className = 'card-exit-btn';
-            exitBtn.innerHTML = '×';
-            exitBtn.setAttribute('aria-label', 'Close expanded view');
-            card.appendChild(exitBtn);
-        }
+        // Initialize carousel navigation
+        initDetailCarousel(contentContainer);
 
-        // Auto-expand description
-        const toggle = card.querySelector('.description-toggle');
-        const wrapper = card.querySelector('.description-wrapper');
-        if (toggle && wrapper) {
-            toggle.classList.add('expanded');
-            wrapper.classList.add('expanded');
-            toggle.setAttribute('aria-expanded', 'true');
-        }
-
-        // Prevent body scroll
+        // Show overlay with animation
+        expandedOverlay = overlayContainer;
+        overlayContainer.classList.add('active');
         document.body.style.overflow = 'hidden';
+
+        // Trigger animation
+        requestAnimationFrame(() => {
+            detailCard.classList.add('visible');
+        });
     }
 
-    function collapseCard() {
-        if (!expandedCard) return;
+    function closeDetailCard() {
+        if (!expandedOverlay) return;
 
-        const card = expandedCard;
-        const grid = card.closest('.card-grid');
-        const pageWrapper = card.closest('.grid-page');
+        detailCard.classList.remove('visible');
 
-        // Remove expanded class from card first
-        card.classList.remove('expanded');
+        // Wait for animation to complete
+        setTimeout(() => {
+            overlayContainer.classList.remove('active');
+            contentContainer.innerHTML = '';
+            expandedOverlay = null;
+            document.body.style.overflow = '';
+        }, 300);
+    }
 
-        // On mobile, restore sibling cards and remove page wrapper class
-        if (pageWrapper) {
-            pageWrapper.classList.remove('has-expanded-card');
-            pageWrapper.querySelectorAll('.scroll-card').forEach(c => {
-                c.style.display = '';
+    function initDetailCarousel(container) {
+        const carousel = container.querySelector('.detail-carousel');
+        if (!carousel) return;
+
+        const track = carousel.querySelector('.carousel-track');
+        const slides = track.querySelectorAll('.carousel-slide');
+        const dots = carousel.querySelectorAll('.carousel-dot');
+        const counter = carousel.querySelector('.carousel-counter');
+        const prevBtn = carousel.querySelector('.carousel-btn.prev');
+        const nextBtn = carousel.querySelector('.carousel-btn.next');
+
+        if (slides.length <= 1) return;
+
+        let current = 0;
+        const total = slides.length;
+
+        function updateCarousel() {
+            track.style.transform = `translateX(-${current * 100}%)`;
+            track.dataset.current = current;
+            dots.forEach((dot, i) => dot.classList.toggle('active', i === current));
+            if (counter) counter.textContent = `${current + 1} / ${total}`;
+        }
+
+        if (prevBtn) {
+            prevBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                current = (current - 1 + total) % total;
+                updateCarousel();
             });
         }
 
-        // Remove exit button
-        const exitBtn = card.querySelector('.card-exit-btn');
-        if (exitBtn) {
-            exitBtn.remove();
+        if (nextBtn) {
+            nextBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                current = (current + 1) % total;
+                updateCarousel();
+            });
         }
 
-        // Collapse description
-        const toggle = card.querySelector('.description-toggle');
-        const wrapper = card.querySelector('.description-wrapper');
-        if (toggle && wrapper) {
-            toggle.classList.remove('expanded');
-            wrapper.classList.remove('expanded');
-            toggle.setAttribute('aria-expanded', 'false');
-        }
+        dots.forEach((dot, i) => {
+            dot.addEventListener('click', (e) => {
+                e.stopPropagation();
+                current = i;
+                updateCarousel();
+            });
+        });
 
-        // Clear the reference before DOM changes
-        expandedCard = null;
-
-        // Remove grid expanded state and force layout recalculation
-        if (grid) {
-            grid.classList.remove('has-expanded-card');
-            // Force reflow to ensure grid layout is recalculated
-            void grid.offsetHeight;
-        }
-
-        // Restore body scroll
-        document.body.style.overflow = '';
+        // Touch/tap navigation on slides
+        slides.forEach(slide => {
+            slide.addEventListener('click', (e) => {
+                const rect = slide.getBoundingClientRect();
+                const tapX = e.clientX - rect.left;
+                if (tapX > rect.width / 2) {
+                    current = (current + 1) % total;
+                } else {
+                    current = (current - 1 + total) % total;
+                }
+                updateCarousel();
+            });
+        });
     }
 }
 
@@ -2222,12 +2391,30 @@ const airbnbData = {
     ],
     kyoto: [
         {
-            name: "Kyoto Listing",
-            summary: "View on Airbnb for details",
-            description: "Kyoto accommodation option - click to view full details on Airbnb.",
-            location: "Kyoto",
-            coords: { lat: 35.0116, lng: 135.7681 },
-            url: "https://www.airbnb.com/rooms/25818091",
+            name: "KumoMachiya Suieikaku",
+            summary: "Traditional machiya · Shimogyō-ku",
+            description: "雲町屋 水影閣 - Traditional Kyoto machiya villa in Shimogyō-ku.",
+            location: "Shimogyō-ku",
+            coords: { lat: 34.9958, lng: 135.7543 },
+            url: "https://www.airbnb.com/rooms/25818091?adults=8&check_in=2026-04-14&check_out=2026-04-17",
+            category: "Accommodation"
+        },
+        {
+            name: "Kyoto Station House",
+            summary: "5 bed · 3 bath · 2 parking",
+            description: "Large house in front of Kyoto Station with 5 bedrooms, 3 toilets/baths, and 2 parking spaces.",
+            location: "Minami Ward (Kyoto Station)",
+            coords: { lat: 34.9828, lng: 135.7588 },
+            url: "https://www.airbnb.com/rooms/1368545888385109079?adults=8&check_in=2026-04-14&check_out=2026-04-17",
+            category: "Accommodation"
+        },
+        {
+            name: "Nishijin Machiya w/Foot Spa",
+            summary: "Elegant machiya · Kamigyo Ward",
+            description: "Elegant Nishijin Machiya with private foot spa in Kamigyo Ward.",
+            location: "Kamigyo Ward (Nishijin)",
+            coords: { lat: 35.0303, lng: 135.7448 },
+            url: "https://www.airbnb.com/rooms/864804396952162092?adults=8&check_in=2026-04-14&check_out=2026-04-17",
             category: "Accommodation"
         },
         {
