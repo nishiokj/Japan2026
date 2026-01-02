@@ -2525,6 +2525,7 @@ body {
         gap: 0.75rem;
         padding: 0.25rem;
         margin: -0.25rem;
+        max-width: 100%;
     }
 
     .airbnb-card-large {
@@ -3753,5 +3754,436 @@ body {
 
     .legend-item {
         font-size: 0.75rem;
+    }
+}
+
+/* ========================================
+   TEXT LIST VIEW
+======================================== */
+
+/* Override old card-grid styles for new text list approach */
+.card-grid {
+    /* Reset all the old grid display properties */
+    display: block !important;
+    grid-template-columns: none !important;
+    grid-template-rows: none !important;
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+    scroll-snap-type: none !important;
+    overflow-x: hidden !important;
+
+    /* Set up for text list */
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: hidden;
+}
+
+.text-list {
+    height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 var(--page-padding-x, 1rem);
+    padding-bottom: 1rem;
+}
+
+/* Hide old card grid pagination elements */
+.grid-swipe-indicator,
+.grid-page-nav {
+    display: none !important;
+}
+
+/* Individual list item */
+.list-item {
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--border-light);
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.list-item:last-child {
+    border-bottom: none;
+}
+
+.list-item-main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+/* Clickable name - the main action */
+.list-item-name {
+    font-family: 'Inter', var(--font-jp), sans-serif;
+    font-size: clamp(0.68rem, 2.8vw, 0.8rem);
+    font-weight: 500;
+    color: #a8a49c;
+    text-decoration: none;
+    line-height: 1.35;
+    transition: color 0.2s ease;
+}
+
+.list-item-name:hover,
+.list-item-name:focus {
+    color: var(--shu);
+}
+
+.list-item-name:active {
+    color: var(--shu-dim);
+}
+
+/* Summary/description */
+.list-item-summary {
+    font-size: clamp(0.7rem, 2.8vw, 0.8rem);
+    color: var(--text-muted);
+    line-height: 1.4;
+    margin: 0;
+    /* Allow 2 lines max */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Meta info row */
+.list-item-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem 0.75rem;
+    font-size: clamp(0.6rem, 2.5vw, 0.7rem);
+    color: var(--text-muted);
+    margin-top: 0.1rem;
+}
+
+.list-item-location {
+    opacity: 0.8;
+}
+
+.list-item-price {
+    font-weight: 600;
+    color: var(--matcha);
+}
+
+.list-item-price.free {
+    color: var(--ai);
+}
+
+/* ========================================
+   DETAIL OVERLAY (Expanded Card View)
+======================================== */
+
+.detail-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: none;
+    pointer-events: none;
+}
+
+.detail-overlay.active {
+    display: block;
+    pointer-events: auto;
+}
+
+.detail-overlay-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.detail-overlay.active .detail-overlay-backdrop {
+    opacity: 1;
+}
+
+.detail-card {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-height: 90vh;
+    max-height: 90dvh;
+    background: var(--bg-base);
+    border-radius: 1.5rem 1.5rem 0 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(100%);
+    transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.detail-card.visible {
+    transform: translateY(0);
+}
+
+.detail-close-btn {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    font-size: 1.5rem;
+    line-height: 1;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease;
+}
+
+.detail-close-btn:hover {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.detail-card-content {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Detail carousel (images) */
+.detail-carousel {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    max-height: 45vh;
+    max-height: 45dvh;
+    background: var(--kuro-cha);
+    overflow: hidden;
+}
+
+.detail-carousel .carousel-track {
+    display: flex;
+    height: 100%;
+    transition: transform 0.3s ease;
+}
+
+.detail-carousel .carousel-slide {
+    flex: 0 0 100%;
+    height: 100%;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: var(--kuro-cha);
+}
+
+.detail-carousel .carousel-slide.no-image {
+    background: var(--bg-elevated);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.detail-carousel .carousel-slide.no-image::after {
+    content: 'No image';
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.detail-carousel .carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    font-size: 1.25rem;
+    border-radius: 50%;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+}
+
+.detail-carousel .carousel-btn:hover {
+    opacity: 1;
+}
+
+.detail-carousel .carousel-btn.prev {
+    left: 0.75rem;
+}
+
+.detail-carousel .carousel-btn.next {
+    right: 0.75rem;
+}
+
+.detail-carousel .carousel-counter {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+}
+
+.detail-carousel .carousel-dots {
+    position: absolute;
+    bottom: 0.75rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.4rem;
+}
+
+.detail-carousel .carousel-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    padding: 0;
+    transition: all 0.2s ease;
+}
+
+.detail-carousel .carousel-dot.active {
+    background: white;
+    transform: scale(1.2);
+}
+
+/* Detail info section */
+.detail-info {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.detail-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem 1rem;
+}
+
+.detail-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 5vw, 1.5rem);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+    line-height: 1.2;
+    flex: 1 1 auto;
+}
+
+.detail-price {
+    font-size: 0.85rem;
+    padding: 0.25rem 0.6rem;
+    background: var(--kuro-cha);
+    border-radius: 4px;
+    color: var(--text-secondary);
+    flex-shrink: 0;
+}
+
+.detail-price .price-usd {
+    color: var(--matcha);
+    font-weight: 600;
+    margin-left: 0.25rem;
+}
+
+.detail-price.free {
+    color: var(--ai);
+}
+
+.detail-summary {
+    font-size: clamp(0.9rem, 3.5vw, 1rem);
+    color: var(--text-secondary);
+    font-style: italic;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.detail-description {
+    font-size: clamp(0.85rem, 3vw, 0.95rem);
+    color: var(--text-primary);
+    line-height: 1.7;
+}
+
+.detail-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border-light);
+}
+
+.detail-meta-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    font-size: clamp(0.8rem, 3vw, 0.9rem);
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.detail-meta-item .icon {
+    flex-shrink: 0;
+}
+
+.detail-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-top: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    background: var(--shu);
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    width: fit-content;
+    transition: background 0.2s ease;
+}
+
+.detail-link:hover {
+    background: var(--shu-dim);
+    color: white;
+}
+
+/* Desktop: larger detail card */
+@media (min-width: 768px) {
+    .detail-card {
+        bottom: auto;
+        top: 50%;
+        left: 50%;
+        right: auto;
+        transform: translate(-50%, -50%) scale(0.95);
+        opacity: 0;
+        max-width: 700px;
+        max-height: 85vh;
+        width: 90%;
+        border-radius: 1rem;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    .detail-card.visible {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+
+    .detail-close-btn {
+        top: 1rem;
+        right: 1rem;
+        width: 40px;
+        height: 40px;
+    }
+
+    .detail-carousel {
+        max-height: 350px;
+    }
+
+    .detail-info {
+        padding: 1.5rem 2rem;
+        gap: 1rem;
     }
 }
